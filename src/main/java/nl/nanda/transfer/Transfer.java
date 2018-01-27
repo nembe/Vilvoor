@@ -26,10 +26,10 @@ public class Transfer {
     private Long entityId;
 
     @Column(name = "FROM_ACCOUNT")
-    private Integer credit;
+    private Long credit;
 
     @Column(name = "TO_ACCOUNT")
-    private Integer debet;
+    private Long debet;
 
     @Embedded
     @AttributeOverride(name = "state", column = @Column(name = "STATUS_ID"))
@@ -51,11 +51,11 @@ public class Transfer {
         this.totaal = new Amount(value);
     }
 
-    public Integer getCredit() {
+    public Long getCredit() {
         return credit;
     }
 
-    public Integer getDebet() {
+    public Long getDebet() {
         return debet;
     }
 
@@ -71,9 +71,16 @@ public class Transfer {
         return totaal.returnValue();
     }
 
+    public Long getEntityId() {
+        return entityId;
+    }
+
     public void startTransfer(final Account zender, final Account ontvanger) {
+
+        System.out.println("startTransfer " + zender.getEntityId());
         this.credit = zender.getEntityId();
         this.debet = ontvanger.getEntityId();
+
         this.totaal.transfer(zender);
         this.totaal.updateAccount(ontvanger);
         this.states.setState(1);

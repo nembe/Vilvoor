@@ -1,1 +1,5 @@
-D:\workspace_ximedes\Ximedes\src\test\java\nl\nanda\config\SvANetworkTests.java
+D:\workspace_ximedes\Ximedes\src\test\java\nl\nanda\transfer\SvaTransferRepoTest.java
+D:\workspace_ximedes\Ximedes\src\test\java\nl\nanda\account\SvaAccountRepoTest.java
+D:\workspace_ximedes\Ximedes\src\test\java\nl\nanda\config\AbstractConfig.java
+D:\workspace_ximedes\Ximedes\src\test\java\nl\nanda\service\SvaTransferServiceTest.java
+D:\workspace_ximedes\Ximedes\src\test\java\nl\nanda\transaction\SvaTransactionRepoTest.java

@@ -1,5 +1,7 @@
 package nl.nanda.account.dao;
 
+import java.util.List;
+
 import nl.nanda.account.Account;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +14,12 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     // public EntityManager entityManager = null;
 
     @Query("select u from Account u where u.entityId = :id")
-    public Account findAccountById(@Param("id") Integer accountId);
+    public Account findAccountById(@Param("id") Long accountId);
 
     @Override
     public <S extends Account> S saveAndFlush(S arg0);
+
+    @Override
+    public List<Account> findAll();
 
 }

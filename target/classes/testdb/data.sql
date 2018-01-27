@@ -1,5 +1,5 @@
-insert into T_ACCOUNT (OVERDRAFT, BALANCE, NAME) values (0.50, 0.25, 'BigieBana');
-insert into T_ACCOUNT (OVERDRAFT, BALANCE, NAME) values (0.00, 100.50, 'BigieTollie');
+insert into T_ACCOUNT (OVERDRAFT, BALANCE, NAME) values (0.50, 0.25, 'Jasper');
+insert into T_ACCOUNT (OVERDRAFT, BALANCE, NAME) values (0.00, 100.50, 'Remko');
 insert into T_STATUS (TRANSFER_STATUS) values ('PENDING');
 insert into T_STATUS (TRANSFER_STATUS) values ('CONFIRMED');
 insert into T_STATUS (TRANSFER_STATUS) values ('INSUFFICIENT_FUNDS');

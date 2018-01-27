@@ -2,7 +2,6 @@ package nl.nanda.config;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -20,14 +19,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class SystemConfig {
 
     @Bean
-    public EntityManagerFactory entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
         // em.setPersistenceXmlLocation("classpath:META-INF/persistence.xml");
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("hibernate.format_sql", "true");
 
-        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        final HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setShowSql(true);
         adapter.setGenerateDdl(true);
         adapter.setDatabase(Database.HSQL);
@@ -37,14 +36,14 @@ public class SystemConfig {
         em.setJpaProperties(props);
         em.afterPropertiesSet();
 
-        return em.getObject();
+        return em;
     }
 
     @Bean
     public PlatformTransactionManager transactionManager() {
 
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(entityManagerFactory());
+        final JpaTransactionManager txManager = new JpaTransactionManager();
+        txManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return txManager;
     }
 

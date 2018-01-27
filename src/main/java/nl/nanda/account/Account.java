@@ -23,7 +23,7 @@ public class Account implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "ID")
-    private Integer entityId;
+    private Long entityId;
 
     @Column(name = "OVERDRAFT")
     private BigDecimal overdraft;
@@ -65,7 +65,7 @@ public class Account implements Serializable {
      * 
      * @return the internal entity identifier
      */
-    public Integer getEntityId() {
+    public Long getEntityId() {
         return entityId;
     }
 
@@ -78,7 +78,7 @@ public class Account implements Serializable {
      * @param entityId
      *            the internal entity identifier
      */
-    void setEntityId(final Integer entityId) {
+    public void setEntityId(final Long entityId) {
         this.entityId = entityId;
     }
 
@@ -116,6 +116,10 @@ public class Account implements Serializable {
         System.out.println("1 Account overdraft " + overdraft.intValue());
         System.out.println("2 Account balance " + balance.intValue());
         return this.balance.add(overdraft);
+    }
+
+    public void setAmount(final BigDecimal amount) {
+        this.amount = amount;
     }
 
     // public Set<Transaction> getTransactions() {

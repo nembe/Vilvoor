@@ -16,19 +16,32 @@ public class Transaction {
     private Long entityId;
 
     @Column(name = "ACCOUNT_ID")
-    private Integer account;
+    private Long account;
 
     @Column(name = "TRANSFER_ID")
-    private Integer transfer;
+    private Long transfer;
 
     public Transaction() {
     }
 
-    public Integer getAccount() {
+    public Transaction(final Long account, final Long transfer) {
+        this.account = account;
+        this.transfer = transfer;
+    }
+
+    public void setEntityId(final Long entityId) {
+        this.entityId = entityId;
+    }
+
+    public Long getEntityId() {
+        return entityId;
+    }
+
+    public Long getAccount() {
         return account;
     }
 
-    public Integer getTransfer() {
+    public Long getTransfer() {
         return transfer;
     }
 

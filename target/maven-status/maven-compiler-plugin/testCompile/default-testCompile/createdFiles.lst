@@ -1,1 +1,5 @@
-nl\nanda\config\SvANetworkTests.class
+nl\nanda\transfer\SvaTransferRepoTest.class
+nl\nanda\transaction\SvaTransactionRepoTest.class
+nl\nanda\config\AbstractConfig.class
+nl\nanda\service\SvaTransferServiceTest.class
+nl\nanda\account\SvaAccountRepoTest.class

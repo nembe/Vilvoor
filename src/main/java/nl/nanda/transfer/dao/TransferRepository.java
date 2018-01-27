@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
 
-    public Transfer findByEntityId(Integer id);
+    public Transfer findByEntityId(Long id);
 
     public Transfer findByDay(Date day);
 

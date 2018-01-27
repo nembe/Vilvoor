@@ -1,10 +1,13 @@
+nl\nanda\service\TransferServiceImpl.class
 nl\nanda\status\Status.class
 nl\nanda\transaction\dao\TransactionRepository.class
 nl\nanda\config\SystemConfig.class
+nl\nanda\service\TransferService.class
 nl\nanda\config\AccountsConfig.class
 nl\nanda\account\Account.class
 nl\nanda\transaction\Transaction.class
 nl\nanda\transfer\Transfer.class
+nl\nanda\exception\SvaException.class
 nl\nanda\account\Amount.class
 nl\nanda\account\dao\AccountRepository.class
 nl\nanda\transfer\dao\TransferRepository.class

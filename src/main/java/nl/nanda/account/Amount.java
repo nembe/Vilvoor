@@ -43,7 +43,7 @@ public class Amount implements Serializable {
         if (newAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new SvaException("Geen Extra voor meneer of mevrouw");
         }
-        acct.setBalance(newAmount);
+        acct.setBalance(newAmount.subtract(acct.getOverdraft()));
     }
 
     public void updateAccount(final Account acct) {
