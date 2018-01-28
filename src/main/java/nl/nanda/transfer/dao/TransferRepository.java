@@ -21,13 +21,15 @@ public interface TransferRepository extends JpaRepository<Transfer, Long> {
     public List<Transfer> findByTotaalGreaterThan(Amount amount);
 
     @Query("select t from Transfer t where t.credit = :id")
-    public List<Transfer> findByCredit(@Param("id") Integer id);
+    public List<Transfer> findByCredit(@Param("id") Long id);
 
     @Query("select t from Transfer t where t.debet = :id")
-    public List<Transfer> findByDebet(@Param("id") Integer id);
+    public List<Transfer> findByDebet(@Param("id") Long id);
+
+    @Override
+    public List<Transfer> findAll();
 
     @Override
     public <S extends Transfer> S save(S arg0);
-    // public <S extends Transfer> S saveAndFlush(S arg0);
 
 }

@@ -10,4 +10,5 @@ D:\workspace_ximedes\Ximedes\src\main\java\nl\nanda\transfer\dao\TransferReposit
 D:\workspace_ximedes\Ximedes\src\main\java\nl\nanda\config\AccountsConfig.java
 D:\workspace_ximedes\Ximedes\src\main\java\nl\nanda\account\dao\AccountRepository.java
 D:\workspace_ximedes\Ximedes\src\main\java\nl\nanda\account\Amount.java
+D:\workspace_ximedes\Ximedes\src\main\java\nl\nanda\exception\SvaNotFoundException.java
 D:\workspace_ximedes\Ximedes\src\main\java\nl\nanda\transaction\Transaction.java

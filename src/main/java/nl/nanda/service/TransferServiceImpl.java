@@ -6,16 +6,20 @@ import java.util.List;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.dao.AccountRepository;
+import nl.nanda.exception.SvaNotFoundException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
 import nl.nanda.transfer.dao.TransferRepository;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TransferServiceImpl implements TransferService {
+
+    private final Logger logger = Logger.getLogger(getClass());
 
     /**
      * The object being tested.
@@ -38,8 +42,29 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    public Long saveAccount(final Account account) {
+
+        return accountRepo.saveAndFlush(account).getEntityId();
+    }
+
+    @Override
+    public Account findAccountByName(final String name) {
+
+        final Account account = accountRepo.findAccountByName(name);
+        if (account == null) {
+            throw new SvaNotFoundException("Account Not found");
+        }
+
+        return account;
+    }
+
+    @Override
     public Account getAccount(final Long id) {
-        return accountRepo.findAccountById(id);
+        final Account account = accountRepo.findAccountById(id);
+        if (account == null) {
+            throw new SvaNotFoundException("Account Not found");
+        }
+        return account;
     }
 
     @Override
@@ -49,8 +74,12 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public Long doTransfer(final Long from, final Long to, final Integer amount) {
+
         final Account fromAccount = accountRepo.findAccountById(from);
         final Account toAccount = accountRepo.findAccountById(to);
+        logger.info("Starting Transaction for Account = "
+                + fromAccount.getName() + " With amount "
+                + fromAccount.getAmount());
 
         final Transfer transfer = new Transfer(BigDecimal.valueOf(amount));
         transfer.startTransfer(fromAccount, toAccount);
@@ -59,19 +88,38 @@ public class TransferServiceImpl implements TransferService {
         final long transferId = transferRepo.save(transfer).getEntityId();
         final Transaction transaction = new Transaction(
                 fromAccount.getEntityId(), transferId);
-        transaction.setEntityId(11L);
         transactionRepo.saveAndFlush(transaction);
         return transferId;
     }
 
     @Override
+    public Long saveTransfer(final Transfer transfer) {
+
+        return transferRepo.saveAndFlush(transfer).getEntityId();
+    }
+
+    @Override
     public Transfer findTransferById(final Long id) {
-        return transferRepo.findByEntityId(id);
+        final Transfer transfer = transferRepo.findByEntityId(id);
+        if (transfer == null) {
+            throw new SvaNotFoundException("Transfer Not found");
+        }
+        return transfer;
     }
 
     @Override
     public Transfer findTransferByDate(final Date day) {
-        return transferRepo.findByDay(day);
+
+        final Transfer transfer = transferRepo.findByDay(day);
+        if (transfer == null) {
+            throw new SvaNotFoundException("Transfer Not found");
+        }
+        return transfer;
+    }
+
+    @Override
+    public List<Transfer> findAllTransfers() {
+        return transferRepo.findAll();
     }
 
     @Override
@@ -88,6 +136,12 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Transaction findTransactionByTransfer(final Long id) {
         return transactionRepo.findByTransfer(id);
+    }
+
+    @Override
+    public List<Transaction> findAllTransactions() {
+
+        return transactionRepo.findAll();
     }
 
 }

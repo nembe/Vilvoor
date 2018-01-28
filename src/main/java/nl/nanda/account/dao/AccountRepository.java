@@ -16,6 +16,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query("select u from Account u where u.entityId = :id")
     public Account findAccountById(@Param("id") Long accountId);
 
+    @Query("select u from Account u where u.name = :name")
+    public Account findAccountByName(@Param("name") String name);
+
     @Override
     public <S extends Account> S saveAndFlush(S arg0);
 

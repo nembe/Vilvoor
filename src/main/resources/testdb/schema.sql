@@ -5,9 +5,9 @@ drop table T_STATUS if exists;
 drop sequence S_TRANSFERS_NUMBER if exists;
 
 
-create table T_ACCOUNT (ID integer identity primary key, OVERDRAFT decimal(8,2), BALANCE decimal(8,2), NAME varchar(50) not null);
-create table T_TRANSACTION (ID integer identity primary key, ACCOUNT_ID integer not null, TRANSFER_ID integer not null, unique(TRANSFER_ID));
-create table T_TRANSFER (ID integer identity primary key, FROM_ACCOUNT integer not null, TO_ACCOUNT integer not null, STATUS_ID integer not null, TRANSFER_DATE date not null, AMOUNT decimal(8,2) not null);
+create table T_ACCOUNT (ID bigint identity primary key, OVERDRAFT decimal(8,2), BALANCE decimal(8,2), NAME varchar(50) not null);
+create table T_TRANSACTION (ID integer identity primary key, ACCOUNT_ID bigint not null, TRANSFER_ID bigint not null, unique(TRANSFER_ID));
+create table T_TRANSFER (ID bigint identity primary key, FROM_ACCOUNT bigint not null, TO_ACCOUNT bigint not null, STATUS_ID integer not null, TRANSFER_DATE date not null, AMOUNT decimal(8,2) not null);
 create table T_STATUS (ID integer identity primary key, TRANSFER_STATUS varchar(25) not null);
 
 create sequence S_TRANSFERS_NUMBER start with 1;

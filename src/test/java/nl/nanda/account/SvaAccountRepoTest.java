@@ -21,16 +21,20 @@ public class SvaAccountRepoTest extends AbstractConfig {
     @Test
     public void testAccount() {
 
-        // entityManagerFactory.
-        final Account acc = accountRepo.findAccountById(0L);
-        System.out.println("Account " + acc.getName());
-
-        final Account acc2 = new Account(BigDecimal.valueOf(1000.50),
+        final Account account = new Account(BigDecimal.valueOf(1000.50),
                 BigDecimal.valueOf(20.00), "Jorka");
-        accountRepo.saveAndFlush(acc2);
-        final Account acc3 = accountRepo.findAccountById(2L);
-        System.out.println("Account " + acc3.getName());
+        accountRepo.saveAndFlush(account);
+        final Account accountFound = accountRepo.findAccountById(account
+                .getEntityId());
+        System.out.println("Account " + account.getEntityId());
+        System.out.println("Account " + accountFound.getName());
 
+    }
+
+    @Test
+    public void testFindAccount() {
+        final Account account = accountRepo.findAccountById(0L);
+        System.out.println("Account " + account.getName());
     }
 
     @Test

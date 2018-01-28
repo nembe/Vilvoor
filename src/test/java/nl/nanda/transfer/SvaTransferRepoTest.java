@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SvaTransferRepoTest extends AbstractConfig {
     @Test
-    // @Ignore
     public void testTransfer() {
         final Transfer trans = transferRepo.findByDay(Date.valueOf(LocalDate
                 .of(2018, 01, 02)));
@@ -22,20 +21,22 @@ public class SvaTransferRepoTest extends AbstractConfig {
     }
 
     @Test
-    // @Ignore
     public void testTransferRepo() {
 
-        final Account acc = new Account(BigDecimal.valueOf(65.70),
+        final Account creditAccount = new Account(BigDecimal.valueOf(65.70),
                 BigDecimal.valueOf(0.00), "Nencke");
-        final Account acc2 = new Account(BigDecimal.valueOf(1000.50),
+        final Account debetAccount = new Account(BigDecimal.valueOf(1000.50),
                 BigDecimal.valueOf(20.00), "Jorka");
         final Transfer trans = new Transfer(BigDecimal.valueOf(20.50));
 
-        acc.setEntityId(1L);
-        acc2.setEntityId(2L);
-        trans.startTransfer(acc, acc2);
-        System.out.println("1: testTransferService " + acc.getBalance());
-        System.out.println("2: testTransferService " + acc2.getBalance());
+        accountRepo.saveAndFlush(creditAccount);
+        accountRepo.saveAndFlush(debetAccount);
+
+        trans.startTransfer(creditAccount, debetAccount);
+        System.out.println("1: testTransferService "
+                + creditAccount.getBalance());
+        System.out.println("2: testTransferService "
+                + debetAccount.getBalance());
         System.out.println("3: testTransferService " + trans.getStates());
 
         System.out.println("4: testTransferService " + trans.getCredit());

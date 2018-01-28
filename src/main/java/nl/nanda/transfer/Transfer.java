@@ -3,6 +3,7 @@ package nl.nanda.transfer;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ public class Transfer {
     @Id
     @GeneratedValue
     @Column(name = "ID")
-    private Long entityId;
+    private final Long entityId;
 
     @Column(name = "FROM_ACCOUNT")
     private Long credit;
@@ -43,12 +44,14 @@ public class Transfer {
     private Amount totaal;
 
     public Transfer() {
+        this.entityId = ThreadLocalRandom.current().nextLong(1000000000000L);
     }
 
     public Transfer(final BigDecimal value) {
         this.states = new Status(3);
         this.day = Date.valueOf(LocalDate.now());
         this.totaal = new Amount(value);
+        this.entityId = ThreadLocalRandom.current().nextLong(1000000000000L);
     }
 
     public Long getCredit() {
@@ -57,6 +60,14 @@ public class Transfer {
 
     public Long getDebet() {
         return debet;
+    }
+
+    public void setCredit(final Long credit) {
+        this.credit = credit;
+    }
+
+    public void setDebet(final Long debet) {
+        this.debet = debet;
     }
 
     public String getStates() {
@@ -77,12 +88,10 @@ public class Transfer {
 
     public void startTransfer(final Account zender, final Account ontvanger) {
 
-        System.out.println("startTransfer " + zender.getEntityId());
         this.credit = zender.getEntityId();
         this.debet = ontvanger.getEntityId();
-
-        this.totaal.transfer(zender);
-        this.totaal.updateAccount(ontvanger);
+        this.totaal.creditAccount(zender);
+        this.totaal.debetAccount(ontvanger);
         this.states.setState(1);
     }
 

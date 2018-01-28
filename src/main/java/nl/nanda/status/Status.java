@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+import nl.nanda.exception.SvaException;
+
 @Embeddable
 public class Status implements Serializable {
 
@@ -13,16 +15,17 @@ public class Status implements Serializable {
     private static final long serialVersionUID = 2513771070740729801L;
     private Integer state;
 
+    public Status() {
+
+    }
+
     public Status(final Integer state) {
         this.state = state;
     }
 
-    private Status() {
-    }
-
     public String valueOf() {
         if (state == null || state == 0) {
-            throw new IllegalArgumentException("The status value is required");
+            throw new SvaException("The status value is required");
         }
 
         String status;
