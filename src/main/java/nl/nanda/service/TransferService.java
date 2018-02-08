@@ -2,6 +2,7 @@ package nl.nanda.service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.UUID;
 
 import nl.nanda.account.Account;
 import nl.nanda.transaction.Transaction;
@@ -9,32 +10,32 @@ import nl.nanda.transfer.Transfer;
 
 public interface TransferService {
 
-    Long createAccount(final Long balance, final Long roodToegestaan,
+    UUID createAccount(final String balance, final String roodToegestaan,
             final String accountUser);
 
-    Long saveAccount(Account account);
+    Account saveAccount(Account account);
 
-    Account getAccount(final Long id);
+    Account getAccount(final UUID id);
 
     Account findAccountByName(final String name);
 
     List<Account> findAllAccounts();
 
-    Long saveTransfer(Transfer transfer);
+    Integer saveTransfer(Transfer transfer);
 
-    Long doTransfer(final Long from, final Long to, final Integer amount);
+    Integer doTransfer(final String from, final String to, final double amount);
 
-    Transfer findTransferById(final Long id);
+    Transfer findTransferById(final Integer id);
 
     Transfer findTransferByDate(final Date day);
 
     List<Transfer> findAllTransfers();
 
-    Transaction findTransaction(final Long id);
+    Transaction findTransaction(final Integer id);
 
-    Transaction findTransactionByAccount(final Long id);
+    Transaction findTransactionByAccount(final UUID id);
 
-    Transaction findTransactionByTransfer(final Long id);
+    Transaction findTransactionByTransfer(final Transfer transfer);
 
     List<Transaction> findAllTransactions();
 }

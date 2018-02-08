@@ -1,5 +1,8 @@
 package nl.nanda.transfer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -11,15 +14,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+/**
+ * Testing the TransferRepository.
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
-public class SvaTransferRepoTest extends AbstractConfig {
+public class AatTransferRepoTest extends AbstractConfig {
+
+    /**
+     * Try to find a Transfer with a given Time.
+     */
     @Test
     public void testTransfer() {
         final Transfer trans = transferRepo.findByDay(Date.valueOf(LocalDate
                 .of(2018, 01, 02)));
-        System.out.println("testTransfer " + trans.getTotaal());
+        assertEquals("25.10", trans.getTotaal());
     }
 
+    /**
+     * Testing starting a Transfer for 20.50. We are checking if the accounts
+     * get debet or credit. Also the states of the transfer are checked.
+     */
     @Test
     public void testTransferRepo() {
 
@@ -29,19 +44,16 @@ public class SvaTransferRepoTest extends AbstractConfig {
                 BigDecimal.valueOf(20.00), "Jorka");
         final Transfer trans = new Transfer(BigDecimal.valueOf(20.50));
 
-        accountRepo.saveAndFlush(creditAccount);
-        accountRepo.saveAndFlush(debetAccount);
+        accountRepo.save(creditAccount);
+        accountRepo.save(debetAccount);
 
+        assertEquals("PENDING", trans.getStates());
         trans.startTransfer(creditAccount, debetAccount);
-        System.out.println("1: testTransferService "
-                + creditAccount.getBalance());
-        System.out.println("2: testTransferService "
-                + debetAccount.getBalance());
-        System.out.println("3: testTransferService " + trans.getStates());
+        assertEquals(BigDecimal.valueOf(45.2), creditAccount.getBalance());
+        assertEquals(BigDecimal.valueOf(1021.0), debetAccount.getBalance());
+        assertEquals("CONFIRMED", trans.getStates());
 
-        System.out.println("4: testTransferService " + trans.getCredit());
-
-        System.out.println("5: testTransferService "
-                + transferRepo.save(trans).getEntityId());
+        assertNotNull(trans.getCredit());
+        assertEquals(Integer.valueOf(1), transferRepo.save(trans).getEntityId());
     }
 }

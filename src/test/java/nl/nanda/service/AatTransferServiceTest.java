@@ -2,6 +2,9 @@ package nl.nanda.service;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
+import java.util.UUID;
+
+import javax.transaction.Transactional;
 
 import nl.nanda.account.Account;
 import nl.nanda.config.AbstractConfig;
@@ -15,13 +18,13 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-public class SvaTransferServiceTest extends AbstractConfig {
+@Transactional
+public class AatTransferServiceTest extends AbstractConfig {
 
     @Test
     public void testTransferServiceAccount() {
 
-        final Long account = transferService.createAccount(Long.valueOf(200),
-                Long.valueOf(10), "Theo");
+        final UUID account = transferService.createAccount("200", "10", "Theo");
 
         System.out.println("2: testTransferService "
                 + transferService.getAccount(account).getName());
@@ -43,7 +46,8 @@ public class SvaTransferServiceTest extends AbstractConfig {
     @Test(expected = SvaNotFoundException.class)
     public void testTransferServiceNotFoundAccount() {
 
-        transferService.getAccount(22222L);
+        transferService.getAccount(UUID
+                .fromString("6ebb8693-0000-0000-80e1-89323971e98a"));
     }
 
     @Test
@@ -63,39 +67,43 @@ public class SvaTransferServiceTest extends AbstractConfig {
     @Test
     public void testTransferServiceTransfer() {
 
-        final Long accountTheo = transferService.createAccount(
-                Long.valueOf(200), Long.valueOf(10), "Theo");
-        final Long accountSaskia = transferService.createAccount(
-                Long.valueOf(0), Long.valueOf(0), "Saskia");
+        final UUID accountTheo = transferService.createAccount("200", "10",
+                "Theo");
+        final UUID accountSaskia = transferService.createAccount("0", "0",
+                "Saskia");
 
         System.out.println("3: testTransferService "
-                + transferService.doTransfer(accountTheo, accountSaskia, 50));
+                + transferService.doTransfer("" + accountTheo, ""
+                        + accountSaskia, 50));
 
-        System.out.println("3: testTransferService "
-                + accountRepo.findAccountById(accountTheo).getBalance());
-
-        System.out.println("3: testTransferService "
-                + accountRepo.findAccountById(accountSaskia).getBalance());
+        // System.out.println("3: testTransferService "
+        // + accountRepo.findAccountById(accountTheo.intValue())
+        // .getBalance());
+        //
+        // System.out.println("3: testTransferService "
+        // + accountRepo.findAccountById(accountSaskia.intValue())
+        // .getBalance());
 
     }
 
     @Test(expected = SvaException.class)
     public void testTransferServiceOverdraft() {
 
-        final Long accountTheo = transferService.createAccount(
-                Long.valueOf(200), Long.valueOf(10), "Theo");
-        final Long accountSaskia = transferService.createAccount(
-                Long.valueOf(0), Long.valueOf(0), "Saskia");
+        final UUID accountTheo = transferService.createAccount("200", "10",
+                "Theo");
+        final UUID accountSaskia = transferService.createAccount("0", "0",
+                "Saskia");
 
         System.out.println("3: testTransferService "
-                + transferService.doTransfer(accountTheo, accountSaskia, 350));
+                + transferService.doTransfer("" + accountTheo, ""
+                        + accountSaskia, 350));
 
     }
 
     @Test
     public void testTransferServiceSearch() {
 
-        final Transfer transfer = transferService.findTransferById(0L);
+        final Transfer transfer = transferService.findTransferById(0);
         System.out.println("3: testTransferService " + transfer.getTotaal());
 
     }
@@ -105,10 +113,12 @@ public class SvaTransferServiceTest extends AbstractConfig {
 
         final Transfer transfer = new Transfer(BigDecimal.valueOf(20.50));
 
-        transfer.setCredit(1L);
-        transfer.setDebet(2L);
+        transfer.setCredit(UUID
+                .fromString("6ebb8693-7179-4e04-80e1-89323971e98a"));
+        transfer.setDebet(UUID
+                .fromString("6ebb8693-7189-4e04-80e1-89323971e98a"));
 
-        final Long id = transferService.saveTransfer(transfer);
+        final Integer id = transferService.saveTransfer(transfer);
         System.out.println("3: testTransferService " + id);
 
     }
@@ -128,17 +138,17 @@ public class SvaTransferServiceTest extends AbstractConfig {
     @Test
     public void testTransferServiceTransaction() {
 
-        final Long accountTheo = transferService.createAccount(
-                Long.valueOf(200), Long.valueOf(10), "Theo");
-        final Long accountSaskia = transferService.createAccount(
-                Long.valueOf(0), Long.valueOf(0), "Saskia");
+        final UUID accountTheo = transferService.createAccount("200", "10",
+                "Theo");
+        final UUID accountSaskia = transferService.createAccount("0", "0",
+                "Saskia");
 
-        final Long transferId = transferService.doTransfer(accountTheo,
-                accountSaskia, 25);
+        final Integer transferId = transferService.doTransfer("" + accountTheo,
+                "" + accountSaskia, 25);
 
-        System.out.println("3: testTransferService "
-                + transferService.findTransactionByTransfer(transferId)
-                        .getAccount());
+        // System.out.println("3: testTransferService "
+        // + transferService.findTransactionByTransfer(transferId)
+        // .getAccount());
 
     }
 

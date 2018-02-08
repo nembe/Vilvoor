@@ -3,13 +3,14 @@ package nl.nanda.transfer;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,20 +18,31 @@ import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
 import nl.nanda.status.Status;
 
+/**
+ * An Transfer for a account of the Ananie Bank. An account has one or more
+ * beneficiaries whose allocations must add up to 100%.
+ * 
+ * An account can make contributions to its beneficiaries. Each contribution is
+ * distributed among the beneficiaries based on an allocation.
+ * 
+ * An entity. An aggregate.
+ * 
+ *
+ */
 @Entity
 @Table(name = "T_TRANSFER")
 public class Transfer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private final Long entityId;
+    private Integer entityId;
 
     @Column(name = "FROM_ACCOUNT")
-    private Long credit;
+    private UUID credit;
 
     @Column(name = "TO_ACCOUNT")
-    private Long debet;
+    private UUID debet;
 
     @Embedded
     @AttributeOverride(name = "state", column = @Column(name = "STATUS_ID"))
@@ -44,29 +56,27 @@ public class Transfer {
     private Amount totaal;
 
     public Transfer() {
-        this.entityId = ThreadLocalRandom.current().nextLong(1000000000000L);
     }
 
     public Transfer(final BigDecimal value) {
         this.states = new Status(3);
         this.day = Date.valueOf(LocalDate.now());
         this.totaal = new Amount(value);
-        this.entityId = ThreadLocalRandom.current().nextLong(1000000000000L);
     }
 
-    public Long getCredit() {
+    public UUID getCredit() {
         return credit;
     }
 
-    public Long getDebet() {
+    public UUID getDebet() {
         return debet;
     }
 
-    public void setCredit(final Long credit) {
+    public void setCredit(final UUID credit) {
         this.credit = credit;
     }
 
-    public void setDebet(final Long debet) {
+    public void setDebet(final UUID debet) {
         this.debet = debet;
     }
 
@@ -82,14 +92,14 @@ public class Transfer {
         return totaal.returnValue();
     }
 
-    public Long getEntityId() {
+    public Integer getEntityId() {
         return entityId;
     }
 
     public void startTransfer(final Account zender, final Account ontvanger) {
 
-        this.credit = zender.getEntityId();
-        this.debet = ontvanger.getEntityId();
+        this.credit = zender.getAccount_uuid();
+        this.debet = ontvanger.getAccount_uuid();
         this.totaal.creditAccount(zender);
         this.totaal.debetAccount(ontvanger);
         this.states.setState(1);

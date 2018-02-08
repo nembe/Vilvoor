@@ -2,24 +2,46 @@ package nl.nanda.account;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import nl.nanda.exception.SvaException;
 
+import org.hibernate.annotations.GenericGenerator;
+
+/**
+ * An account for a member of the reward network. An account has one or more
+ * beneficiaries whose allocations must add up to 100%.
+ * 
+ * An account can make contributions to its beneficiaries. Each contribution is
+ * distributed among the beneficiaries based on an allocation.
+ * 
+ * An entity. An aggregate.
+ * 
+ *
+ */
 @Entity
 @Table(name = "T_ACCOUNT")
+// @IdClass(AccountId.class)
 public class Account implements Serializable {
 
     private static final long serialVersionUID = 3642534679048425984L;
 
-    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
-    private Long entityId;
+    private Integer entityId;
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "ACCOUNT_UUID")
+    private UUID account_uuid;
 
     @Column(name = "OVERDRAFT")
     private BigDecimal overdraft;
@@ -35,22 +57,26 @@ public class Account implements Serializable {
 
     @SuppressWarnings("unused")
     private Account() {
-        this.entityId = ThreadLocalRandom.current().nextLong(1000000000000L);
     }
 
     public Account(final BigDecimal balance, final BigDecimal overdraft,
             final String name) {
-        this.entityId = ThreadLocalRandom.current().nextLong(1000000000000L);
         this.balance = balance;
         this.overdraft = overdraft;
         this.name = name;
     }
 
-    public Long getEntityId() {
+    public Account(final BigDecimal balance, final String name) {
+        this.balance = balance;
+        this.name = name;
+        this.overdraft = BigDecimal.valueOf(0);
+    }
+
+    public Integer getEntityId() {
         return entityId;
     }
 
-    public void setEntityId(final Long entityId) {
+    public void setEntityId(final Integer entityId) {
         this.entityId = entityId;
     }
 
@@ -84,6 +110,14 @@ public class Account implements Serializable {
 
     public void setAmount(final BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public UUID getAccount_uuid() {
+        return account_uuid;
+    }
+
+    public void setAccount_uuid(final UUID account_uuid) {
+        this.account_uuid = account_uuid;
     }
 
 }
