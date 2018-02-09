@@ -6,9 +6,14 @@ nl\nanda\service\TransferService.class
 nl\nanda\config\AccountsConfig.class
 nl\nanda\account\Account.class
 nl\nanda\transaction\Transaction.class
+nl\nanda\account\AccountId.class
 nl\nanda\transfer\Transfer.class
+nl\nanda\account\Account_.class
 nl\nanda\exception\SvaException.class
 nl\nanda\account\Amount.class
 nl\nanda\exception\SvaNotFoundException.class
+nl\nanda\monitor\JamonMonitor.class
 nl\nanda\account\dao\AccountRepository.class
+nl\nanda\monitor\LoggingAspect.class
+nl\nanda\config\AspectsConfig.class
 nl\nanda\transfer\dao\TransferRepository.class

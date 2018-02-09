@@ -14,10 +14,18 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+/**
+ * The Class SystemConfig configure the beans for the persistence layer.
+ */
 @Configuration
 @EnableJpaRepositories("nl.nanda")
 public class SystemConfig {
 
+    /**
+     * Entity manager factory.
+     *
+     * @return the local container entity manager factory bean
+     */
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -39,6 +47,11 @@ public class SystemConfig {
         return em;
     }
 
+    /**
+     * Transaction manager.
+     *
+     * @return the platform transaction manager
+     */
     @Bean
     public PlatformTransactionManager transactionManager() {
 
@@ -48,8 +61,10 @@ public class SystemConfig {
     }
 
     /**
-     * Creates an in-memory "rewards" database populated with test data for fast
-     * testing
+     * Creates an in-memory "Accounts and Transactions" database populated with
+     * test data.
+     *
+     * @return the data source
      */
     @Bean
     public DataSource dataSource() {
@@ -57,6 +72,5 @@ public class SystemConfig {
                 .addScript("classpath:testdb/schema.sql")
                 .addScript("classpath:testdb/data.sql").build();
 
-        // .addScript("classpath:testdb/schema.sql").build();
     }
 }

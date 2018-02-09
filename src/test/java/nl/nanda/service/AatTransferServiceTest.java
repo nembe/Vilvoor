@@ -17,20 +17,35 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+// TODO: Auto-generated Javadoc
+/**
+ * AAT (Ananie Account Transactions) A system tests that verifies the
+ * TransferService (facade) component. Who is responsible for delegating
+ * requests to the Repositories.
+ * 
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 public class AatTransferServiceTest extends AbstractConfig {
 
+    /**
+     * Test transfer service account.
+     */
     @Test
     public void testTransferServiceAccount() {
 
-        final UUID account = transferService.createAccount("200", "10", "Theo");
+        final String accountUUID = transferService.createAccount("200", "10",
+                "Theo");
 
         System.out.println("2: testTransferService "
-                + transferService.getAccount(account).getName());
+                + transferService.getAccount(accountUUID).getName());
 
     }
 
+    /**
+     * Test transfer service save account.
+     */
     @Test
     public void testTransferServiceSaveAccount() {
 
@@ -43,13 +58,18 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service not found account.
+     */
     @Test(expected = SvaNotFoundException.class)
     public void testTransferServiceNotFoundAccount() {
 
-        transferService.getAccount(UUID
-                .fromString("6ebb8693-0000-0000-80e1-89323971e98a"));
+        transferService.getAccount("6ebb8693-0000-0000-80e1-89323971e98a");
     }
 
+    /**
+     * Test transfer service find all account.
+     */
     @Test
     public void testTransferServiceFindAllAccount() {
 
@@ -64,17 +84,19 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service transfer.
+     */
     @Test
     public void testTransferServiceTransfer() {
 
-        final UUID accountTheo = transferService.createAccount("200", "10",
+        final String accountTheo = transferService.createAccount("200", "10",
                 "Theo");
-        final UUID accountSaskia = transferService.createAccount("0", "0",
+        final String accountSaskia = transferService.createAccount("0", "0",
                 "Saskia");
 
         System.out.println("3: testTransferService "
-                + transferService.doTransfer("" + accountTheo, ""
-                        + accountSaskia, 50));
+                + transferService.doTransfer(accountTheo, accountSaskia, 50));
 
         // System.out.println("3: testTransferService "
         // + accountRepo.findAccountById(accountTheo.intValue())
@@ -86,12 +108,15 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service overdraft.
+     */
     @Test(expected = SvaException.class)
     public void testTransferServiceOverdraft() {
 
-        final UUID accountTheo = transferService.createAccount("200", "10",
+        final String accountTheo = transferService.createAccount("200", "10",
                 "Theo");
-        final UUID accountSaskia = transferService.createAccount("0", "0",
+        final String accountSaskia = transferService.createAccount("0", "0",
                 "Saskia");
 
         System.out.println("3: testTransferService "
@@ -100,6 +125,9 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service search.
+     */
     @Test
     public void testTransferServiceSearch() {
 
@@ -108,6 +136,9 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service save.
+     */
     @Test
     public void testTransferServiceSave() {
 
@@ -123,6 +154,9 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service find all transfers.
+     */
     @Test
     public void testTransferServiceFindAllTransfers() {
         final Iterator<Transfer> itarator = transferService.findAllTransfers()
@@ -135,12 +169,15 @@ public class AatTransferServiceTest extends AbstractConfig {
         }
     }
 
+    /**
+     * Test transfer service transaction.
+     */
     @Test
     public void testTransferServiceTransaction() {
 
-        final UUID accountTheo = transferService.createAccount("200", "10",
+        final String accountTheo = transferService.createAccount("200", "10",
                 "Theo");
-        final UUID accountSaskia = transferService.createAccount("0", "0",
+        final String accountSaskia = transferService.createAccount("0", "0",
                 "Saskia");
 
         final Integer transferId = transferService.doTransfer("" + accountTheo,
@@ -152,6 +189,9 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     }
 
+    /**
+     * Test transfer service find all transactions.
+     */
     @Test
     public void testTransferServiceFindAllTransactions() {
         final Iterator<Transaction> itarator = transferService

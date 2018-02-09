@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+// TODO: Auto-generated Javadoc
 /**
  * Testing the TransactionRepository.
  *
@@ -74,7 +75,7 @@ public class AatTransactionRepoTest extends AbstractConfig {
 
         // Create Transaction with given Transfer
         final Transaction txnOne = new Transaction(
-                accountDoubleSender.getAccount_uuid(), transOne);
+                accountDoubleSender.getAccountUUID(), transOne);
 
         // Save the Transactions and Transfer
         transferRepo.save(transOne);
@@ -82,14 +83,14 @@ public class AatTransactionRepoTest extends AbstractConfig {
 
         transTwo.startTransfer(accountDoubleSender, accountDoubleReciever);
         final Transaction txnTwo = new Transaction(
-                accountDoubleSender.getAccount_uuid(), transTwo);
+                accountDoubleSender.getAccountUUID(), transTwo);
 
         transferRepo.save(transTwo);
         transactionRepo.save(txnTwo);
 
         // Try to find the two transactions on this account
         final List<Transaction> transactions = transactionRepo
-                .findAllByAccount(accountDoubleSender.getAccount_uuid());
+                .findAllByAccount(accountDoubleSender.getAccountUUID());
 
         assertEquals("10.50", transactions.get(0).getTransfer().getTotaal());
         assertEquals(2, transactions.size());

@@ -12,7 +12,7 @@
 	</appender>
 
 	<!-- Application logger -->
-	<logger name="rewards">
+	<logger name="nl.nanda">
 		<level value="info" />
 	</logger>
 

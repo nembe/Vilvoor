@@ -10,9 +10,14 @@ import nl.nanda.transfer.dao.TransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AbstractConfig.
+ */
 @ContextConfiguration(classes = { AccountsConfig.class })
 public class AbstractConfig {
 
+    /** The manager. */
     @Autowired
     public EntityManager manager;
 
@@ -22,12 +27,15 @@ public class AbstractConfig {
     @Autowired
     public AccountRepository accountRepo;
 
+    /** The transfer repo. */
     @Autowired
     public TransferRepository transferRepo;
 
+    /** The transaction repo. */
     @Autowired
     public TransactionRepository transactionRepo;
 
+    /** The transfer service. */
     @Autowired
     public TransferService transferService;
 

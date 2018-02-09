@@ -11,15 +11,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+// TODO: Auto-generated Javadoc
 /**
- * A system test that verifies the Account component and the AccountRepository
- * of the AAT application. Uses Spring to bootstrap the application for use in a
- * test environment.
+ * A tests that verifies the Account component and the AccountRepository of the
+ * AAT application. Uses Spring to bootstrap the application for use in a test
+ * environment.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AatAccountRepoTest extends AbstractConfig {
 
+    /**
+     * Test find account by name.
+     */
     @Test
     public void testFindAccountByName() {
 
@@ -44,7 +48,7 @@ public class AatAccountRepoTest extends AbstractConfig {
         final Account accountSave = accountRepo.save(account);
 
         final Account accountFound = accountRepo.findByAccount_uuid(accountSave
-                .getAccount_uuid());
+                .getAccountUUID());
         assertEquals(Integer.valueOf(3), accountFound.getEntityId());
         assertEquals("Coemba", accountFound.getName());
 
@@ -59,6 +63,9 @@ public class AatAccountRepoTest extends AbstractConfig {
         assertEquals("Jasper", account.getName());
     }
 
+    /**
+     * Test find all accounts.
+     */
     @Test
     public void testFindAllAccounts() {
 

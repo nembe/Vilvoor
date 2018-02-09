@@ -6,23 +6,40 @@ import javax.persistence.Embeddable;
 
 import nl.nanda.exception.SvaException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Status.
+ */
 @Embeddable
 public class Status implements Serializable {
 
-    /**
-     * 
-     */
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2513771070740729801L;
+    
+    /** The state. */
     private Integer state;
 
+    /**
+     * Instantiates a new status.
+     */
     public Status() {
 
     }
 
+    /**
+     * Instantiates a new status.
+     *
+     * @param state the state
+     */
     public Status(final Integer state) {
         this.state = state;
     }
 
+    /**
+     * Value of.
+     *
+     * @return the string
+     */
     public String valueOf() {
         if (state == null || state == 0) {
             throw new SvaException("The status value is required");
@@ -50,6 +67,11 @@ public class Status implements Serializable {
         return status;
     }
 
+    /**
+     * Sets the state.
+     *
+     * @param state the new state
+     */
     public void setState(final Integer state) {
         this.state = state;
     }
