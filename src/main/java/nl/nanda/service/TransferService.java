@@ -34,7 +34,8 @@ public interface TransferService {
     /**
      * Save account that is new or modified.
      *
-     * @param account the account
+     * @param account
+     *            the account
      * @return the manage account.
      */
     Account saveAccount(final Account account);
@@ -85,6 +86,8 @@ public interface TransferService {
      * @return the integer
      */
     Integer doTransfer(final String from, final String to, final double amount);
+
+    Integer doTransfer(Transfer transfer);
 
     /**
      * Find transfer by id.

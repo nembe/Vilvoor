@@ -4,7 +4,7 @@ package nl.nanda.exception;
 /**
  * The Class SvaException.
  */
-public class SvaException extends IllegalStateException {
+public class AnanieException extends IllegalStateException {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -4786107113012806296L;
@@ -14,7 +14,7 @@ public class SvaException extends IllegalStateException {
      *
      * @param ex the ex
      */
-    public SvaException(String ex) {
+    public AnanieException(String ex) {
         super(ex);
     }
 

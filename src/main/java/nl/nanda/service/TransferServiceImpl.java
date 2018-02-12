@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.dao.AccountRepository;
-import nl.nanda.exception.SvaNotFoundException;
+import nl.nanda.exception.AnanieNotFoundException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TransferServiceImpl.
  */
@@ -41,8 +40,11 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     public TransactionRepository transactionRepo;
 
-    /* (non-Javadoc)
-     * @see nl.nanda.service.TransferService#createAccount(java.lang.String, java.lang.String, java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.nanda.service.TransferService#createAccount(java.lang.String,
+     * java.lang.String, java.lang.String)
      */
     /*
      * @see nl.nanda.service.TransferService#createAccount(java.lang.String,
@@ -58,8 +60,11 @@ public class TransferServiceImpl implements TransferService {
         return savedAccount.getAccountUUID().toString();
     }
 
-    /* (non-Javadoc)
-     * @see nl.nanda.service.TransferService#saveAccount(nl.nanda.account.Account)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.nanda.service.TransferService#saveAccount(nl.nanda.account.Account)
      */
     /*
      * @see
@@ -70,52 +75,64 @@ public class TransferServiceImpl implements TransferService {
         return accountRepo.save(account);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findAccountByName(java.lang.String)
      */
     /*
      * @see nl.nanda.service.TransferService#findAccountByName(java.lang.String)
      */
     @Override
+    @Transactional(readOnly = true)
     public Account findAccountByName(final String name) {
 
         final Account account = accountRepo.findAccountByName(name);
         if (account == null) {
-            throw new SvaNotFoundException("Account Not found");
+            throw new AnanieNotFoundException("Account Not found");
         }
 
         return account;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#getAccount(java.lang.String)
      */
     /*
      * @see nl.nanda.service.TransferService#getAccount(java.lang.String)
      */
     @Override
+    @Transactional(readOnly = true)
     public Account getAccount(final String id) {
         final Account account = accountRepo.findByAccount_uuid(UUID
                 .fromString(id));
         if (account == null) {
-            throw new SvaNotFoundException("Account Not found");
+            throw new AnanieNotFoundException("Account Not found");
         }
         return account;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findAllAccounts()
      */
     /*
      * @see nl.nanda.service.TransferService#findAllAccounts()
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Account> findAllAccounts() {
         return accountRepo.findAll();
     }
 
-    /* (non-Javadoc)
-     * @see nl.nanda.service.TransferService#doTransfer(java.lang.String, java.lang.String, double)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.nanda.service.TransferService#doTransfer(java.lang.String,
+     * java.lang.String, double)
      */
     /*
      * @see nl.nanda.service.TransferService#doTransfer(java.lang.String,
@@ -129,23 +146,30 @@ public class TransferServiceImpl implements TransferService {
                 .fromString(from));
         final Account toAccount = accountRepo.findByAccount_uuid(UUID
                 .fromString(to));
-        logger.info("Starting Transaction for Account = "
-                + fromAccount.getName() + " With amount "
-                + fromAccount.getAmount());
 
         final Transfer transfer = new Transfer(BigDecimal.valueOf(amount));
         transfer.startTransfer(fromAccount, toAccount);
-        accountRepo.saveAndFlush(fromAccount);
-        accountRepo.saveAndFlush(toAccount);
+        accountRepo.save(fromAccount);
+        accountRepo.save(toAccount);
         final Integer transferId = transferRepo.save(transfer).getEntityId();
         final Transaction transaction = new Transaction(
                 fromAccount.getAccountUUID(), transfer);
-        transactionRepo.saveAndFlush(transaction);
+        transactionRepo.save(transaction);
         return transferId;
     }
 
-    /* (non-Javadoc)
-     * @see nl.nanda.service.TransferService#saveTransfer(nl.nanda.transfer.Transfer)
+    @Override
+    public Integer doTransfer(final Transfer transfer) {
+
+        return doTransfer(transfer.getCredit().toString(), transfer.getDebet()
+                .toString(), transfer.getTotaal());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.nanda.service.TransferService#saveTransfer(nl.nanda.transfer.Transfer)
      */
     /*
      * @see
@@ -154,65 +178,81 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Integer saveTransfer(final Transfer transfer) {
 
-        return transferRepo.saveAndFlush(transfer).getEntityId();
+        return transferRepo.save(transfer).getEntityId();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findTransferById(java.lang.Integer)
      */
     /*
      * @see nl.nanda.service.TransferService#findTransferById(java.lang.Integer)
      */
     @Override
+    @Transactional(readOnly = true)
     public Transfer findTransferById(final Integer id) {
         final Transfer transfer = transferRepo.findByEntityId(id);
         if (transfer == null) {
-            throw new SvaNotFoundException("Transfer Not found");
+            throw new AnanieNotFoundException("Transfer Not found");
         }
         return transfer;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findTransferByDate(java.sql.Date)
      */
     /*
      * @see nl.nanda.service.TransferService#findTransferByDate(java.sql.Date)
      */
     @Override
+    @Transactional(readOnly = true)
     public Transfer findTransferByDate(final Date day) {
 
         final Transfer transfer = transferRepo.findByDay(day);
         if (transfer == null) {
-            throw new SvaNotFoundException("Transfer Not found");
+            throw new AnanieNotFoundException("Transfer Not found");
         }
         return transfer;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findAllTransfers()
      */
     /*
      * @see nl.nanda.service.TransferService#findAllTransfers()
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Transfer> findAllTransfers() {
         return transferRepo.findAll();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findTransaction(java.lang.Integer)
      */
     /*
      * @see nl.nanda.service.TransferService#findTransaction(java.lang.Integer)
      */
     @Override
+    @Transactional(readOnly = true)
     public Transaction findTransaction(final Integer id) {
 
         return transactionRepo.findByEntityId(id);
     }
 
-    /* (non-Javadoc)
-     * @see nl.nanda.service.TransferService#findTransactionByAccount(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.nanda.service.TransferService#findTransactionByAccount(java.lang.String
+     * )
      */
     /*
      * @see
@@ -220,12 +260,17 @@ public class TransferServiceImpl implements TransferService {
      * )
      */
     @Override
+    @Transactional(readOnly = true)
     public Transaction findTransactionByAccount(final String id) {
         return transactionRepo.findByAccount(UUID.fromString(id));
     }
 
-    /* (non-Javadoc)
-     * @see nl.nanda.service.TransferService#findTransactionByTransfer(nl.nanda.transfer.Transfer)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.nanda.service.TransferService#findTransactionByTransfer(nl.nanda.transfer
+     * .Transfer)
      */
     /*
      * @see
@@ -233,17 +278,21 @@ public class TransferServiceImpl implements TransferService {
      * .Transfer)
      */
     @Override
+    @Transactional(readOnly = true)
     public Transaction findTransactionByTransfer(final Transfer transfer) {
         return transactionRepo.findByTransfer(transfer);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see nl.nanda.service.TransferService#findAllTransactions()
      */
     /*
      * @see nl.nanda.service.TransferService#findAllTransactions()
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Transaction> findAllTransactions() {
 
         return transactionRepo.findAll();

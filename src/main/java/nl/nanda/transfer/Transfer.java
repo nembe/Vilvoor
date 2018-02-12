@@ -18,7 +18,6 @@ import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
 import nl.nanda.status.Status;
 
-// TODO: Auto-generated Javadoc
 /**
  * An Transfer for a account of the Ananie Bank. An account has one or more
  * beneficiaries whose allocations must add up to 100%.
@@ -51,7 +50,7 @@ public class Transfer {
     /** The states. */
     @Embedded
     @AttributeOverride(name = "state", column = @Column(name = "STATUS_ID"))
-    private Status states;
+    private Status state;
 
     /** The day. */
     @Column(name = "TRANSFER_DATE")
@@ -71,10 +70,11 @@ public class Transfer {
     /**
      * Instantiates a new transfer.
      *
-     * @param value the value
+     * @param value
+     *            the value
      */
     public Transfer(final BigDecimal value) {
-        this.states = new Status(3);
+        this.state = new Status(3);
         this.day = Date.valueOf(LocalDate.now());
         this.totaal = new Amount(value);
     }
@@ -100,7 +100,8 @@ public class Transfer {
     /**
      * Sets the credit.
      *
-     * @param credit the new credit
+     * @param credit
+     *            the new credit
      */
     public void setCredit(final UUID credit) {
         this.credit = credit;
@@ -109,7 +110,8 @@ public class Transfer {
     /**
      * Sets the debet.
      *
-     * @param debet the new debet
+     * @param debet
+     *            the new debet
      */
     public void setDebet(final UUID debet) {
         this.debet = debet;
@@ -120,8 +122,8 @@ public class Transfer {
      *
      * @return the states
      */
-    public String getStates() {
-        return states.valueOf();
+    public String getState() {
+        return state.valueOf();
     }
 
     /**
@@ -138,7 +140,7 @@ public class Transfer {
      *
      * @return the totaal
      */
-    public String getTotaal() {
+    public double getTotaal() {
         return totaal.returnValue();
     }
 
@@ -154,8 +156,10 @@ public class Transfer {
     /**
      * Start transfer.
      *
-     * @param zender the zender
-     * @param ontvanger the ontvanger
+     * @param zender
+     *            the zender
+     * @param ontvanger
+     *            the ontvanger
      */
     public void startTransfer(final Account zender, final Account ontvanger) {
 
@@ -163,7 +167,7 @@ public class Transfer {
         this.debet = ontvanger.getAccountUUID();
         this.totaal.creditAccount(zender);
         this.totaal.debetAccount(ontvanger);
-        this.states.setState(1);
+        this.state.setState(1);
     }
 
 }

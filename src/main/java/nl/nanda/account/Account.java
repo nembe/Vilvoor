@@ -11,11 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import nl.nanda.exception.SvaException;
+import nl.nanda.exception.AnanieException;
 
 import org.hibernate.annotations.GenericGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
  * An account for a member of the reward network. An account has one or more
  * beneficiaries whose allocations must add up to 100%.
@@ -73,9 +72,12 @@ public class Account implements Serializable {
     /**
      * Instantiates a new account.
      *
-     * @param balance the balance
-     * @param overdraft the overdraft
-     * @param name the name
+     * @param balance
+     *            the balance
+     * @param overdraft
+     *            the overdraft
+     * @param name
+     *            the name
      */
     public Account(final BigDecimal balance, final BigDecimal overdraft,
             final String name) {
@@ -87,8 +89,10 @@ public class Account implements Serializable {
     /**
      * Instantiates a new account.
      *
-     * @param balance the balance
-     * @param name the name
+     * @param balance
+     *            the balance
+     * @param name
+     *            the name
      */
     public Account(final BigDecimal balance, final String name) {
         this.balance = balance;
@@ -108,7 +112,8 @@ public class Account implements Serializable {
     /**
      * Sets the entity id.
      *
-     * @param entityId the new entity id
+     * @param entityId
+     *            the new entity id
      */
     public void setEntityId(final Integer entityId) {
         this.entityId = entityId;
@@ -135,10 +140,12 @@ public class Account implements Serializable {
     /**
      * Sets the overdraft.
      *
-     * @param overdraft the new overdraft
-     * @throws SvaException the sva exception
+     * @param overdraft
+     *            the new overdraft
+     * @throws AnanieException
+     *             the sva exception
      */
-    public void setOverdraft(final BigDecimal overdraft) throws SvaException {
+    public void setOverdraft(final BigDecimal overdraft) throws AnanieException {
         this.overdraft = overdraft;
     }
 
@@ -154,7 +161,8 @@ public class Account implements Serializable {
     /**
      * Sets the balance.
      *
-     * @param balance the new balance
+     * @param balance
+     *            the new balance
      */
     public void setBalance(final BigDecimal balance) {
         this.balance = balance;
@@ -163,7 +171,8 @@ public class Account implements Serializable {
     /**
      * Sets the name.
      *
-     * @param name the new name
+     * @param name
+     *            the new name
      */
     public void setName(final String name) {
         this.name = name;
@@ -181,7 +190,8 @@ public class Account implements Serializable {
     /**
      * Sets the amount.
      *
-     * @param amount the new amount
+     * @param amount
+     *            the new amount
      */
     public void setAmount(final BigDecimal amount) {
         this.amount = amount;
@@ -199,7 +209,8 @@ public class Account implements Serializable {
     /**
      * Sets the account UUID.
      *
-     * @param account_uuid the new account UUID
+     * @param account_uuid
+     *            the new account UUID
      */
     public void setAccountUUID(final UUID account_uuid) {
         this.account_uuid = account_uuid;

@@ -1,6 +1,7 @@
 package nl.nanda.transaction;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,13 +16,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-// TODO: Auto-generated Javadoc
 /**
  * Testing the TransactionRepository.
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 public class AatTransactionRepoTest extends AbstractConfig {
 
     /**
@@ -92,7 +94,7 @@ public class AatTransactionRepoTest extends AbstractConfig {
         final List<Transaction> transactions = transactionRepo
                 .findAllByAccount(accountDoubleSender.getAccountUUID());
 
-        assertEquals("10.50", transactions.get(0).getTransfer().getTotaal());
+        assertTrue(10.50 == transactions.get(0).getTransfer().getTotaal());
         assertEquals(2, transactions.size());
         assertEquals(3, transactionRepo.findAll().size());
     }

@@ -1,6 +1,7 @@
 package nl.nanda.account;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,8 +11,8 @@ import nl.nanda.config.AbstractConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-// TODO: Auto-generated Javadoc
 /**
  * A tests that verifies the Account component and the AccountRepository of the
  * AAT application. Uses Spring to bootstrap the application for use in a test
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 public class AatAccountRepoTest extends AbstractConfig {
 
     /**
@@ -28,12 +30,12 @@ public class AatAccountRepoTest extends AbstractConfig {
     public void testFindAccountByName() {
 
         final Account account = AccountFactory.createAccounts(1000.50, 0.0,
-                "Jorka");
+                "Jorka1");
         accountRepo.save(account);
         final Account accountFound = accountRepo.findAccountByName(account
                 .getName());
-        assertEquals(Integer.valueOf(2), accountFound.getEntityId());
-        assertEquals("Jorka", accountFound.getName());
+        assertEquals("Jorka1", accountFound.getName());
+        assertTrue(1000.50 == accountFound.getBalance().doubleValue());
 
     }
 
@@ -49,8 +51,8 @@ public class AatAccountRepoTest extends AbstractConfig {
 
         final Account accountFound = accountRepo.findByAccount_uuid(accountSave
                 .getAccountUUID());
-        assertEquals(Integer.valueOf(3), accountFound.getEntityId());
         assertEquals("Coemba", accountFound.getName());
+        assertTrue(1000.50 == accountFound.getBalance().doubleValue());
 
     }
 

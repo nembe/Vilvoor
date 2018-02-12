@@ -1,13 +1,12 @@
 package nl.nanda.config;
 
-import nl.nanda.monitor.JamonMonitor;
+import nl.nanda.monitor.AnanieMonitor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AspectsConfig.
  */
@@ -22,8 +21,8 @@ public class AspectsConfig {
      * @return the jamon monitor
      */
     @Bean
-    public JamonMonitor monitorFactory() {
-        return new JamonMonitor();
+    public AnanieMonitor monitorFactory() {
+        return new AnanieMonitor();
     }
 
 }

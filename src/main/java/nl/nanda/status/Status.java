@@ -4,9 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
-import nl.nanda.exception.SvaException;
+import nl.nanda.exception.AnanieException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Status.
  */
@@ -15,7 +14,7 @@ public class Status implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2513771070740729801L;
-    
+
     /** The state. */
     private Integer state;
 
@@ -29,7 +28,8 @@ public class Status implements Serializable {
     /**
      * Instantiates a new status.
      *
-     * @param state the state
+     * @param state
+     *            the state
      */
     public Status(final Integer state) {
         this.state = state;
@@ -42,7 +42,7 @@ public class Status implements Serializable {
      */
     public String valueOf() {
         if (state == null || state == 0) {
-            throw new SvaException("The status value is required");
+            throw new AnanieException("The status value is required");
         }
 
         String status;
@@ -70,7 +70,8 @@ public class Status implements Serializable {
     /**
      * Sets the state.
      *
-     * @param state the new state
+     * @param state
+     *            the new state
      */
     public void setState(final Integer state) {
         this.state = state;

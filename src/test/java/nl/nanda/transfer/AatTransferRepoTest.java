@@ -2,6 +2,7 @@ package nl.nanda.transfer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -13,13 +14,14 @@ import nl.nanda.config.AbstractConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-// TODO: Auto-generated Javadoc
 /**
  * Testing the TransferRepository.
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 public class AatTransferRepoTest extends AbstractConfig {
 
     /**
@@ -29,7 +31,7 @@ public class AatTransferRepoTest extends AbstractConfig {
     public void testTransfer() {
         final Transfer trans = transferRepo.findByDay(Date.valueOf(LocalDate
                 .of(2018, 01, 02)));
-        assertEquals("25.10", trans.getTotaal());
+        assertTrue(25.10 == trans.getTotaal());
     }
 
     /**
@@ -48,11 +50,11 @@ public class AatTransferRepoTest extends AbstractConfig {
         accountRepo.save(creditAccount);
         accountRepo.save(debetAccount);
 
-        assertEquals("PENDING", trans.getStates());
+        assertEquals("PENDING", trans.getState());
         trans.startTransfer(creditAccount, debetAccount);
         assertEquals(BigDecimal.valueOf(45.2), creditAccount.getBalance());
         assertEquals(BigDecimal.valueOf(1021.0), debetAccount.getBalance());
-        assertEquals("CONFIRMED", trans.getStates());
+        assertEquals("CONFIRMED", trans.getState());
 
         assertNotNull(trans.getCredit());
         assertEquals(Integer.valueOf(1), transferRepo.save(trans).getEntityId());

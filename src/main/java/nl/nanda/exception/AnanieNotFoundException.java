@@ -4,7 +4,7 @@ package nl.nanda.exception;
 /**
  * The Class SvaNotFoundException.
  */
-public class SvaNotFoundException extends RuntimeException {
+public class AnanieNotFoundException extends RuntimeException {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -606925344573029631L;
@@ -14,7 +14,7 @@ public class SvaNotFoundException extends RuntimeException {
      *
      * @param ex the ex
      */
-    public SvaNotFoundException(final String ex) {
+    public AnanieNotFoundException(final String ex) {
         super(ex);
     }
 

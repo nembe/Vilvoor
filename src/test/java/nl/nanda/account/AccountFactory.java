@@ -2,9 +2,8 @@ package nl.nanda.account;
 
 import java.math.BigDecimal;
 
-// TODO: Auto-generated Javadoc
 /**
- * Creates accounts for testing.
+ * Creates accounts Objects for testing.
  *
  */
 public class AccountFactory {
@@ -13,9 +12,12 @@ public class AccountFactory {
      * If there is no given Overdraft on this account, the account is created
      * without overdraft (limit under 0).
      *
-     * @param balance the balance
-     * @param overdraft the overdraft
-     * @param name the name
+     * @param balance
+     *            the balance
+     * @param overdraft
+     *            the overdraft
+     * @param name
+     *            the name
      * @return the account
      */
     static public Account createAccounts(final double balance,

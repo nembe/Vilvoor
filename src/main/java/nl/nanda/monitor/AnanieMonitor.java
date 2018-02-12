@@ -7,11 +7,10 @@ import com.jamonapi.MonitorComposite;
 import com.jamonapi.MonitorFactory;
 import com.jamonapi.MonitorFactoryInterface;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class JamonMonitor.
+ * The Class AnanieMonitor.
  */
-public class JamonMonitor {
+public class AnanieMonitor {
 
     /** The monitor factory. */
     private final MonitorFactoryInterface monitorFactory = MonitorFactory
@@ -20,14 +19,15 @@ public class JamonMonitor {
     /**
      * Instantiates a new jamon monitor.
      */
-    public JamonMonitor() {
+    public AnanieMonitor() {
 
     }
 
     /**
      * Start.
      *
-     * @param name the name
+     * @param name
+     *            the name
      * @return the monitor
      */
     public Monitor start(final String name) {
@@ -73,7 +73,8 @@ public class JamonMonitor {
     /**
      * Average call time.
      *
-     * @param methodName the method name
+     * @param methodName
+     *            the method name
      * @return the long
      */
     public long averageCallTime(final String methodName) {
@@ -83,7 +84,8 @@ public class JamonMonitor {
     /**
      * Call count.
      *
-     * @param methodName the method name
+     * @param methodName
+     *            the method name
      * @return the long
      */
     public long callCount(final String methodName) {
@@ -93,7 +95,8 @@ public class JamonMonitor {
     /**
      * Last call time.
      *
-     * @param methodName the method name
+     * @param methodName
+     *            the method name
      * @return the long
      */
     public long lastCallTime(final String methodName) {
@@ -104,7 +107,8 @@ public class JamonMonitor {
     /**
      * Maximum call time.
      *
-     * @param methodName the method name
+     * @param methodName
+     *            the method name
      * @return the long
      */
     public long maximumCallTime(final String methodName) {
@@ -114,7 +118,8 @@ public class JamonMonitor {
     /**
      * Minimum call time.
      *
-     * @param methodName the method name
+     * @param methodName
+     *            the method name
      * @return the long
      */
     public long minimumCallTime(final String methodName) {
@@ -124,7 +129,8 @@ public class JamonMonitor {
     /**
      * Total call time.
      *
-     * @param methodName the method name
+     * @param methodName
+     *            the method name
      * @return the long
      */
     public long totalCallTime(final String methodName) {

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.jamonapi.Monitor;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class LoggingAspect.
  */
@@ -22,17 +21,18 @@ public class LoggingAspect {
 
     /** The logger. */
     private final Logger logger = Logger.getLogger(getClass());
-    
+
     /** The monitor factory. */
-    private final JamonMonitor monitorFactory;
+    private final AnanieMonitor monitorFactory;
 
     /**
      * Instantiates a new logging aspect.
      *
-     * @param monitorFactory the monitor factory
+     * @param monitorFactory
+     *            the monitor factory
      */
     @Autowired
-    public LoggingAspect(final JamonMonitor monitorFactory) {
+    public LoggingAspect(final AnanieMonitor monitorFactory) {
         super();
         this.monitorFactory = monitorFactory;
     }
@@ -40,7 +40,8 @@ public class LoggingAspect {
     /**
      * Impl logging.
      *
-     * @param joinPoint the join point
+     * @param joinPoint
+     *            the join point
      */
     @Before("execution(public * nl.nanda.*.*Repository.find*(..))")
     public void implLogging(final JoinPoint joinPoint) {
@@ -52,9 +53,11 @@ public class LoggingAspect {
     /**
      * Monitor.
      *
-     * @param repositoryMethod the repository method
+     * @param repositoryMethod
+     *            the repository method
      * @return the object
-     * @throws Throwable the throwable
+     * @throws Throwable
+     *             the throwable
      */
     @Around("execution(public * nl.nanda.service.TransferServiceImpl.doTransfer(..))")
     public Object monitor(final ProceedingJoinPoint repositoryMethod)
@@ -70,9 +73,10 @@ public class LoggingAspect {
     }
 
     /**
-     * Creates the join point trace name.
+     * Creates the join point trace (method) name.
      *
-     * @param joinPoint the join point
+     * @param joinPoint
+     *            the join point
      * @return the string
      */
     private String createJoinPointTraceName(final JoinPoint joinPoint) {
