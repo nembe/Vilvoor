@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 
 import nl.nanda.account.Account;
 import nl.nanda.config.AbstractConfig;
-import nl.nanda.exception.AnanieException;
 import nl.nanda.exception.AnanieNotFoundException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transfer.Transfer;
@@ -101,7 +100,7 @@ public class AatTransferServiceTest extends AbstractConfig {
     /**
      * Test overdraft of the account, the transfer cannot complete.
      */
-    @Test(expected = AnanieException.class)
+    @Test
     public void testTransferServiceOverdraft() {
 
         final String accountTheo = transferService.createAccount("200", "10",
@@ -109,7 +108,11 @@ public class AatTransferServiceTest extends AbstractConfig {
         final String accountSaskia = transferService.createAccount("0", "0",
                 "Saskia");
 
-        transferService.doTransfer(accountTheo, accountSaskia, 350);
+        final Integer transferTransactionId = transferService.doTransfer(
+                accountTheo, accountSaskia, 350);
+        assertEquals("INSUFFICIENT_FUNDS",
+                transferService.findTransferById(transferTransactionId)
+                        .getState());
     }
 
     /**
@@ -130,14 +133,15 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Rollback(true)
     public void testTransferServiceSaveTransfer() {
 
-        final Transfer transfer = new Transfer(BigDecimal.valueOf(20.50));
+        final Transfer transfer = new Transfer();
+        transfer.setTotaal(BigDecimal.valueOf(20.50));
 
         transfer.setCredit(UUID
                 .fromString("6ebb8693-7179-4e04-80e1-89323971e98a"));
         transfer.setDebet(UUID
                 .fromString("6ebb8693-7189-4e04-80e1-89323971e98a"));
 
-        assertTrue(transferService.saveTransfer(transfer) == 1);
+        assertTrue(transferService.saveTransfer(transfer) != 0);
     }
 
     /**
@@ -162,7 +166,8 @@ public class AatTransferServiceTest extends AbstractConfig {
         final String accountSaskia = transferService.createAccount("0", "0",
                 "Saskia");
 
-        final Transfer transfer = new Transfer(BigDecimal.valueOf(20.50));
+        final Transfer transfer = new Transfer();
+        transfer.setTotaal(BigDecimal.valueOf(20.50));
 
         transfer.setCredit(UUID.fromString(accountTheo));
         transfer.setDebet(UUID.fromString(accountSaskia));

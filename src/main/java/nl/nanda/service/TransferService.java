@@ -7,7 +7,6 @@ import nl.nanda.account.Account;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transfer.Transfer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The CRUD operations for AAT application or done true the TransferService. Who
  * is responsible for delegating requests to the Repositories. We try to
@@ -87,6 +86,10 @@ public interface TransferService {
      */
     Integer doTransfer(final String from, final String to, final double amount);
 
+    /**
+     * @param transfer
+     * @return
+     */
     Integer doTransfer(Transfer transfer);
 
     /**

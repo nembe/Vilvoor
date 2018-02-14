@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AatTransferRepoTest extends AbstractConfig {
 
     /**
-     * Try to find a Transfer with a given Time.
+     * Try to find a Transfer with a given Day.
      */
     @Test
     public void testTransfer() {
@@ -45,13 +45,14 @@ public class AatTransferRepoTest extends AbstractConfig {
                 BigDecimal.valueOf(0.00), "Nencke");
         final Account debetAccount = new Account(BigDecimal.valueOf(1000.50),
                 BigDecimal.valueOf(20.00), "Jorka");
-        final Transfer trans = new Transfer(BigDecimal.valueOf(20.50));
 
         accountRepo.save(creditAccount);
         accountRepo.save(debetAccount);
 
+        final Transfer trans = new Transfer(creditAccount, debetAccount);
+
         assertEquals("PENDING", trans.getState());
-        trans.startTransfer(creditAccount, debetAccount);
+        trans.startTransfer(BigDecimal.valueOf(20.50));
         assertEquals(BigDecimal.valueOf(45.2), creditAccount.getBalance());
         assertEquals(BigDecimal.valueOf(1021.0), debetAccount.getBalance());
         assertEquals("CONFIRMED", trans.getState());

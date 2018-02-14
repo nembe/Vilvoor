@@ -9,23 +9,23 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
 import nl.nanda.status.Status;
 
 /**
- * An Transfer for a account of the Ananie Bank. An account has one or more
- * beneficiaries whose allocations must add up to 100%.
+ * An Transfer for are to a account of the Ananie Bank. For updating the Account
+ * entity we delegate that to the Amount class. The Status of the Transfer is
+ * updated accordingly if a exception occur, we deal with that in the service
+ * layer.
  * 
- * An account can make contributions to its beneficiaries. Each contribution is
- * distributed among the beneficiaries based on an allocation.
- * 
- * An entity. An aggregate.
  * 
  *
  */
@@ -48,39 +48,60 @@ public class Transfer {
     private UUID debet;
 
     /** The states. */
-    @Embedded
-    @AttributeOverride(name = "state", column = @Column(name = "STATUS_ID"))
+    @Enumerated
+    @Column(columnDefinition = "smallint", name = "STATUS_ID")
     private Status state;
 
     /** The day. */
     @Column(name = "TRANSFER_DATE")
-    private Date day;
+    private final Date day;
 
     /** The totaal. */
     @Embedded
     @AttributeOverride(name = "totaal", column = @Column(name = "AMOUNT"))
-    private Amount totaal;
+    private final Amount totaal;
+
+    @Transient
+    private Account zender;
+
+    @Transient
+    private Account ontvanger;
 
     /**
-     * Instantiates a new transfer.
+     * Instantiates a new transfer. Before saving this transfer the accounts
+     * UUID's have to be set first.
+     * 
+     * This can be done from the Service layer especially when transfering is
+     * required. Are use the other constructor if needed to transfer money.
+     * 
      */
     public Transfer() {
-    }
-
-    /**
-     * Instantiates a new transfer.
-     *
-     * @param value
-     *            the value
-     */
-    public Transfer(final BigDecimal value) {
-        this.state = new Status(3);
+        this.totaal = new Amount(BigDecimal.valueOf(0));
+        this.state = Status.PENDING;
         this.day = Date.valueOf(LocalDate.now());
-        this.totaal = new Amount(value);
     }
 
     /**
-     * Gets the credit.
+     * Instantiates a new transfer. Before starting the transfer we need two
+     * Accounts entities objects.
+     * 
+     * @param zender
+     *            = the sender account entity object (sending money).
+     * @param ontvanger
+     *            = the ontvanger account entity object (receiving money).
+     */
+    public Transfer(final Account zender, final Account ontvanger) {
+        this.totaal = new Amount(BigDecimal.valueOf(0));
+        this.state = Status.PENDING;
+        this.day = Date.valueOf(LocalDate.now());
+        this.debet = ontvanger.getAccountUUID();
+        this.credit = zender.getAccountUUID();
+        this.zender = zender;
+        this.ontvanger = ontvanger;
+    }
+
+    /**
+     * Gets the credit UUID belonging to the senders Account.
      *
      * @return the credit
      */
@@ -89,7 +110,7 @@ public class Transfer {
     }
 
     /**
-     * Gets the debet.
+     * Gets the debet UUID belonging to the receiver Account.
      *
      * @return the debet
      */
@@ -154,20 +175,34 @@ public class Transfer {
     }
 
     /**
-     * Start transfer.
-     *
-     * @param zender
-     *            the zender
-     * @param ontvanger
-     *            the ontvanger
+     * Setting the total saldo for this transfer.
+     * 
+     * @param value
      */
-    public void startTransfer(final Account zender, final Account ontvanger) {
+    public void setTotaal(final BigDecimal value) {
+        this.totaal.setTotaal(value);
+    }
 
-        this.credit = zender.getAccountUUID();
-        this.debet = ontvanger.getAccountUUID();
+    /**
+     * Changing the state of the Transfer.
+     * 
+     * @param state
+     */
+    public void setState(final Status state) {
+        this.state = state;
+    }
+
+    /**
+     * Starting the transfer we need Two Accounts entities objects.
+     * 
+     * @param value
+     *            = The total that must be transfer between accounts.
+     */
+    public void startTransfer(final BigDecimal value) {
+        this.totaal.setTotaal(value);
         this.totaal.creditAccount(zender);
         this.totaal.debetAccount(ontvanger);
-        this.state.setState(1);
+        this.state = Status.CONFIRMED;
     }
 
 }

@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface TransferRepository.
  */
@@ -20,7 +19,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     /**
      * Find by entity id.
      *
-     * @param id the id
+     * @param id
+     *            the id
      * @return the transfer
      */
     public Transfer findByEntityId(Integer id);
@@ -28,7 +28,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     /**
      * Find by day.
      *
-     * @param day the day
+     * @param day
+     *            the day
      * @return the transfer
      */
     public Transfer findByDay(Date day);
@@ -36,7 +37,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     /**
      * Find by day after.
      *
-     * @param day the day
+     * @param day
+     *            the day
      * @return the list
      */
     public List<Transfer> findByDayAfter(Date day);
@@ -44,7 +46,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     /**
      * Find by totaal greater than.
      *
-     * @param amount the amount
+     * @param amount
+     *            the amount
      * @return the list
      */
     public List<Transfer> findByTotaalGreaterThan(Amount amount);
@@ -52,7 +55,8 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     /**
      * Find by credit.
      *
-     * @param id the id
+     * @param id
+     *            the id
      * @return the list
      */
     @Query("select t from Transfer t where t.credit = :id")
@@ -61,13 +65,16 @@ public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     /**
      * Find by debet.
      *
-     * @param id the id
+     * @param id
+     *            the id
      * @return the list
      */
     @Query("select t from Transfer t where t.debet = :id")
     public List<Transfer> findByDebet(@Param("id") UUID id);
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.springframework.data.jpa.repository.JpaRepository#findAll()
      */
     @Override

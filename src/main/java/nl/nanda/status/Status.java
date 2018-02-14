@@ -1,29 +1,17 @@
 package nl.nanda.status;
 
-import java.io.Serializable;
-
-import javax.persistence.Embeddable;
-
 import nl.nanda.exception.AnanieException;
 
 /**
- * The Class Status.
+ * The enum Status with the different states a Transfer can be in..
  */
-@Embeddable
-public class Status implements Serializable {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 2513771070740729801L;
+public enum Status {
+
+    ACCOUNT_NOT_FOUND(0), CONFIRMED(1), INSUFFICIENT_FUNDS(2), PENDING(3);
 
     /** The state. */
     private Integer state;
-
-    /**
-     * Instantiates a new status.
-     */
-    public Status() {
-
-    }
 
     /**
      * Instantiates a new status.
@@ -31,12 +19,12 @@ public class Status implements Serializable {
      * @param state
      *            the state
      */
-    public Status(final Integer state) {
+    private Status(final Integer state) {
         this.state = state;
     }
 
     /**
-     * Value of.
+     * Return the state of the Transfer.
      *
      * @return the string
      */
@@ -68,7 +56,7 @@ public class Status implements Serializable {
     }
 
     /**
-     * Sets the state.
+     * Sets the state of the Transfer.
      *
      * @param state
      *            the new state

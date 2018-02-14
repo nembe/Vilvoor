@@ -7,9 +7,9 @@ import javax.persistence.Embeddable;
 
 import nl.nanda.exception.AnanieException;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Amount.
+ * The Class Amount where the Total of the Transaction is calculated. After
+ * calculation the Accounts Objects are updated.
  */
 @Embeddable
 public class Amount implements Serializable {
@@ -48,28 +48,49 @@ public class Amount implements Serializable {
     }
 
     /**
-     * Credit account.
+     * Credit the account that started the transfer. If a Exception occur we
+     * deal with that in the Service layer. The service layer will noticed the
+     * upper layers.
      *
-     * @param acct
-     *            the acct
+     * @param account
+     *            the account that must be credit.
      */
-    public void creditAccount(final Account acct) {
-        final BigDecimal newAmount = acct.getAmount().subtract(totaal);
+    public void creditAccount(final Account account) {
+        final BigDecimal newAmount = account.getAmount().subtract(totaal);
         if (newAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new AnanieException("Geen Extra voor meneer of mevrouw");
         }
-        acct.setBalance(newAmount.subtract(acct.getOverdraft()));
+        account.setBalance(newAmount.subtract(account.getOverdraft()));
     }
 
     /**
-     * Debet account.
+     * Debet the account that is receiving money.
      *
-     * @param acct
+     * @param account
      *            the acct
      */
-    public void debetAccount(final Account acct) {
-        final BigDecimal newAmount = acct.getBalance().add(totaal);
-        acct.setBalance(newAmount);
+    public void debetAccount(final Account account) {
+        final BigDecimal newAmount = account.getBalance().add(totaal);
+        account.setBalance(newAmount);
 
     }
+
+    /**
+     * Returing the total saldo.
+     * 
+     * @return
+     */
+    public BigDecimal getTotaal() {
+        return totaal;
+    }
+
+    /**
+     * Setting the total saldo.
+     * 
+     * @param totaal
+     */
+    public void setTotaal(final BigDecimal totaal) {
+        this.totaal = totaal;
+    }
+
 }

@@ -44,7 +44,7 @@ public class AatTransactionRepoTest extends AbstractConfig {
     @Test(expected = DataIntegrityViolationException.class)
     public void testTransactionViolation() {
 
-        final Transfer trans = new Transfer(BigDecimal.valueOf(60.50));
+        final Transfer trans = new Transfer();
 
         final Transaction transaction = new Transaction(
                 UUID.fromString("6ebb8693-7179-4e04-80e1-89323971e98a"), trans);
@@ -69,11 +69,13 @@ public class AatTransactionRepoTest extends AbstractConfig {
         accountRepo.save(accountDoubleReciever);
 
         // Creating the transfers
-        final Transfer transOne = new Transfer(BigDecimal.valueOf(10.50));
-        final Transfer transTwo = new Transfer(BigDecimal.valueOf(20.50));
+        final Transfer transOne = new Transfer(accountDoubleSender,
+                accountDoubleReciever);
+        final Transfer transTwo = new Transfer(accountDoubleSender,
+                accountDoubleReciever);
 
         // Staring the Transfers
-        transOne.startTransfer(accountDoubleSender, accountDoubleReciever);
+        transOne.startTransfer(BigDecimal.valueOf(10.50));
 
         // Create Transaction with given Transfer
         final Transaction txnOne = new Transaction(
@@ -83,7 +85,7 @@ public class AatTransactionRepoTest extends AbstractConfig {
         transferRepo.save(transOne);
         transactionRepo.save(txnOne);
 
-        transTwo.startTransfer(accountDoubleSender, accountDoubleReciever);
+        transTwo.startTransfer(BigDecimal.valueOf(20.50));
         final Transaction txnTwo = new Transaction(
                 accountDoubleSender.getAccountUUID(), transTwo);
 
