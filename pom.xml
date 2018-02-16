@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.ananie.farao</groupId>
   <artifactId>bank</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   
    
@@ -46,5 +46,14 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			 <groupId>org.glassfish</groupId>
+             <artifactId>javax.el</artifactId>   
+		</dependency>
+		
 	</dependencies>	
 </project>

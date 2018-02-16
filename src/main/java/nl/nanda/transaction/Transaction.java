@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import nl.nanda.transfer.Transfer;
 
-// TODO: Auto-generated Javadoc
 /**
  * Transaction entity Class. Only if the transfer is successful (CONFIRMED
  * Transfers) a transaction on the given account is recorded.
@@ -46,8 +45,10 @@ public class Transaction {
     /**
      * Create a Transaction entity Object with a unique id and transfer.
      *
-     * @param account the account
-     * @param transfer the transfer
+     * @param account
+     *            the account
+     * @param transfer
+     *            the transfer
      */
     public Transaction(final UUID account, final Transfer transfer) {
         this.account = account;
@@ -57,7 +58,8 @@ public class Transaction {
     /**
      * Set the PrimaryKey for the Transaction.
      *
-     * @param entityId the new entity id
+     * @param entityId
+     *            the new entity id
      */
     public void setEntityId(final Integer entityId) {
         this.entityId = entityId;

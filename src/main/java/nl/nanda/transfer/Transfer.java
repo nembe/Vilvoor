@@ -15,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
@@ -41,10 +43,12 @@ public class Transfer {
 
     /** The credit. */
     @Column(name = "FROM_ACCOUNT")
+    @NotNull
     private UUID credit;
 
     /** The debet. */
     @Column(name = "TO_ACCOUNT")
+    @NotNull
     private UUID debet;
 
     /** The states. */
@@ -54,11 +58,14 @@ public class Transfer {
 
     /** The day. */
     @Column(name = "TRANSFER_DATE")
+    @NotNull
     private final Date day;
 
     /** The totaal. */
     @Embedded
     @AttributeOverride(name = "totaal", column = @Column(name = "AMOUNT"))
+    @NotNull
+    @Valid
     private final Amount totaal;
 
     @Transient
@@ -69,10 +76,11 @@ public class Transfer {
 
     /**
      * Instantiates a new transfer. Before saving this transfer the accounts
-     * UUID's have to be set first.
+     * UUID's have to be set first. We also have to put the accounts objects
+     * Before transfering money not needed for only saving in DB.
      * 
      * This can be done from the Service layer especially when transfering is
-     * required. Are use the other constructor if needed to transfer money.
+     * required. Use the other constructor if needed to transfer money.
      * 
      */
     public Transfer() {
@@ -90,7 +98,7 @@ public class Transfer {
      * @param ontvanger
      *            = the ontvanger account entity object (receiving money).
      */
-    public Transfer(final Account zender, final Account ontvanger) {
+    public Transfer(@Valid final Account zender, @Valid final Account ontvanger) {
         this.totaal = new Amount(BigDecimal.valueOf(0));
         this.state = Status.PENDING;
         this.day = Date.valueOf(LocalDate.now());
@@ -119,7 +127,7 @@ public class Transfer {
     }
 
     /**
-     * Sets the credit.
+     * Sets the credit in the client use.
      *
      * @param credit
      *            the new credit
@@ -157,7 +165,7 @@ public class Transfer {
     }
 
     /**
-     * Gets the totaal.
+     * Gets the total for this Transfer.
      *
      * @return the totaal
      */
@@ -199,10 +207,45 @@ public class Transfer {
      *            = The total that must be transfer between accounts.
      */
     public void startTransfer(final BigDecimal value) {
+
         this.totaal.setTotaal(value);
         this.totaal.creditAccount(zender);
         this.totaal.debetAccount(ontvanger);
         this.state = Status.CONFIRMED;
+    }
+
+    /**
+     * @return
+     */
+    public Account getZender() {
+        return zender;
+    }
+
+    /**
+     * The UUID is needed to be able to save the Transfer to the Database.
+     * 
+     * @param zender
+     */
+    public void setZender(final Account zender) {
+        this.zender = zender;
+        this.credit = zender.getAccountUUID();
+    }
+
+    /**
+     * @return
+     */
+    public Account getOntvanger() {
+        return ontvanger;
+    }
+
+    /**
+     * The UUID is needed to be able to save the Transfer to the Database.
+     * 
+     * @param ontvanger
+     */
+    public void setOntvanger(final Account ontvanger) {
+        this.ontvanger = ontvanger;
+        this.debet = ontvanger.getAccountUUID();
     }
 
 }

@@ -1,11 +1,13 @@
 package nl.nanda.account.dao;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import nl.nanda.account.Account;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,7 +24,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer>,
     /**
      * Find account by id.
      *
-     * @param accountId the account id
+     * @param accountId
+     *            the account id
      * @return the account
      */
     @Query("select u from Account u where u.entityId = :id")
@@ -31,16 +34,18 @@ public interface AccountRepository extends JpaRepository<Account, Integer>,
     /**
      * Find by account uuid.
      *
-     * @param account_uuid the account uuid
+     * @param account_uuid
+     *            the account uuid
      * @return the account
      */
     @Query("select u from Account u where u.account_uuid = :uuid")
-    public Account findByAccount_uuid(@Param("uuid") UUID account_uuid);
+    public Account findAccountByUuid(@Param("uuid") UUID account_uuid);
 
     /**
      * Find account by name.
      *
-     * @param name the name
+     * @param name
+     *            the name
      * @return the account
      */
     @Query("select u from Account u where u.name = :name")
@@ -51,5 +56,14 @@ public interface AccountRepository extends JpaRepository<Account, Integer>,
      */
     @Query("select o from Account o")
     public void findAllById();
+
+    /**
+     * @param saldo
+     * @param uuid
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Account o SET o.balance = :saldo where o.account_uuid = :uuid")
+    public void updateAccountBalance(@Param("saldo") BigDecimal saldo,
+            @Param("uuid") UUID uuid);
 
 }

@@ -33,6 +33,7 @@ public class SystemConfig {
         // em.setPersistenceXmlLocation("classpath:META-INF/persistence.xml");
         final Properties props = new Properties();
         props.setProperty("hibernate.format_sql", "true");
+        props.setProperty("javax.persistence.validation.mode", "AUTO");
 
         final HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setShowSql(true);

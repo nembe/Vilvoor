@@ -49,7 +49,7 @@ public class AatAccountRepoTest extends AbstractConfig {
                 "Coemba");
         final Account accountSave = accountRepo.save(account);
 
-        final Account accountFound = accountRepo.findByAccount_uuid(accountSave
+        final Account accountFound = accountRepo.findAccountByUuid(accountSave
                 .getAccountUUID());
         assertEquals("Coemba", accountFound.getName());
         assertTrue(1000.50 == accountFound.getBalance().doubleValue());
@@ -114,6 +114,36 @@ public class AatAccountRepoTest extends AbstractConfig {
 
         assertEquals(BigDecimal.valueOf(1000.50), account.getBalance());
 
+    }
+
+    /**
+     * The Update Account balance.
+     */
+    @Test
+    public void testUpdatingAccountBalance() {
+
+        final Account account = accountRepo.findAccountById(0);
+        account.setBalance(BigDecimal.valueOf(1000.50));
+        final Account accountSave = accountRepo.save(account);
+
+        assertEquals(BigDecimal.valueOf(1000.50), accountSave.getBalance());
+    }
+
+    /**
+     * The Updating Account true a update query, without retrieving the entity
+     * object.
+     */
+    @Test
+    public void testUpdatingAccountBalanceByQuery() {
+
+        final Account account = accountRepo.findAccountById(0);
+
+        accountRepo.updateAccountBalance(BigDecimal.valueOf(1000.50),
+                account.getAccountUUID());
+        final Account accountSave = accountRepo.findAccountByUuid(account
+                .getAccountUUID());
+
+        assertTrue(1000.50 == accountSave.getBalance().doubleValue());
     }
 
 }

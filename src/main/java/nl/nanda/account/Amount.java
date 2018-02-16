@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 import nl.nanda.exception.AnanieException;
 
@@ -18,6 +19,7 @@ public class Amount implements Serializable {
     private static final long serialVersionUID = 6382918820030954080L;
 
     /** The totaal. */
+    @NotNull
     private BigDecimal totaal;
 
     /**

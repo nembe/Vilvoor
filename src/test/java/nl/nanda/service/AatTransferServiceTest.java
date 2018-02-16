@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolationException;
 
 import nl.nanda.account.Account;
 import nl.nanda.config.AbstractConfig;
+import nl.nanda.exception.AnanieException;
 import nl.nanda.exception.AnanieNotFoundException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transfer.Transfer;
@@ -32,7 +34,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class AatTransferServiceTest extends AbstractConfig {
 
     /**
-     * Create a account and try to receive this account base on the accounts
+     * Create a account and try to receive this account based on the accounts
      * UUID.
      */
     @Test
@@ -45,8 +47,19 @@ public class AatTransferServiceTest extends AbstractConfig {
     }
 
     /**
-     * Test transfer service save account.
+     * Try to create a account with buggy data (saldo).
      */
+    @Test(expected = AnanieException.class)
+    public void testCreateAccountWithBuggySaldo() {
+
+        transferService.createAccount("200l", "10l", "Theo");
+    }
+
+    /**
+     * Test transfer service save account. The client is here responsible for
+     * creating the Account object before saving it.
+     */
+
     @Test
     public void testTransferServiceSaveAccount() {
 
@@ -60,11 +73,52 @@ public class AatTransferServiceTest extends AbstractConfig {
     }
 
     /**
-     * Test transfer service not found account.
+     * Test transfer service save account. The client is here responsible for
+     * creating the Account object before saving it, But name can not be NULL.
+     */
+    @Test(expected = ConstraintViolationException.class)
+    public void testSavingAccountNotValid() {
+
+        final Account account = new Account(BigDecimal.valueOf(1000.50),
+                BigDecimal.valueOf(21.00), null);
+        transferService.saveAccount(account);
+
+    }
+
+    /**
+     * Testing updating the account from the client without creating/retrieving
+     * a account object.
+     */
+    @Test
+    public void testTransferServiceUpdatingAccount() {
+        transferService.updateAccountBalance(220,
+                "6ebb8693-7179-4e04-80e1-89323971e98a");
+        final Account account = transferService
+                .getAccount("6ebb8693-7179-4e04-80e1-89323971e98a");
+        assertTrue(account.getBalance().doubleValue() == 220);
+
+    }
+
+    /**
+     * Test transfer service not found account. Which the client can anticipate
+     * on (AnanieNotFoundException).
      */
     @Test(expected = AnanieNotFoundException.class)
     public void testTransferServiceNotFoundAccount() {
         transferService.getAccount("6ebb8693-0000-0000-80e1-89323971e98a");
+    }
+
+    /**
+     * Test transfer service cannot complete because the account doesn't exist.
+     */
+    @Test(expected = AnanieNotFoundException.class)
+    public void testNotFoundAccountByTryingTransfer() {
+
+        final String accountSaskia = transferService.createAccount("0", "0",
+                "Saskia");
+
+        transferService.doTransfer("6ebb8693-0000-0000-80e1-89323971e98a",
+                accountSaskia, 50);
     }
 
     /**
@@ -168,7 +222,6 @@ public class AatTransferServiceTest extends AbstractConfig {
 
         final Transfer transfer = new Transfer();
         transfer.setTotaal(BigDecimal.valueOf(20.50));
-
         transfer.setCredit(UUID.fromString(accountTheo));
         transfer.setDebet(UUID.fromString(accountSaskia));
 
@@ -215,6 +268,17 @@ public class AatTransferServiceTest extends AbstractConfig {
         assertTrue("6ebb8693-7179-4e04-80e1-89323971e98a"
                 .equalsIgnoreCase(trans.getAccount().toString()));
         assertTrue(trans.getTransfer().getTotaal() == 25.10);
+
+    }
+
+    /**
+     * Testing validation on methods. ConstraintViolationException is the second
+     * Exception that the client can look out for.
+     */
+    @Test(expected = ConstraintViolationException.class)
+    public void testConstraintViolationException() {
+
+        transferService.getAccount("");
 
     }
 }

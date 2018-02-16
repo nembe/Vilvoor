@@ -10,6 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import nl.nanda.exception.AnanieException;
 
@@ -28,7 +32,6 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "T_ACCOUNT")
-// @IdClass(AccountId.class)
 public class Account implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -48,19 +51,25 @@ public class Account implements Serializable {
 
     /** The overdraft. */
     @Column(name = "OVERDRAFT")
+    @Min(value = 0)
     private BigDecimal overdraft;
 
     /** The balance. */
     @Column(name = "BALANCE")
+    @Min(value = 0)
     private BigDecimal balance;
 
     /** The name. */
     @Column(name = "NAME")
+    @NotNull
     private String name;
 
     /** The amount. */
-    @SuppressWarnings("unused")
+    @Transient
     private BigDecimal amount;
+
+    @Version
+    private Integer version;
 
     /**
      * Instantiates a new account.
@@ -70,7 +79,7 @@ public class Account implements Serializable {
     }
 
     /**
-     * Instantiates a new account.
+     * Instantiates a new account, only the account name is mandatory.
      *
      * @param balance
      *            the balance
@@ -87,7 +96,7 @@ public class Account implements Serializable {
     }
 
     /**
-     * Instantiates a new account.
+     * Instantiates a new account, only the account name is mandatory..
      *
      * @param balance
      *            the balance
@@ -179,7 +188,7 @@ public class Account implements Serializable {
     }
 
     /**
-     * Gets the amount.
+     * Gets the amount this account can goes underwater.
      *
      * @return the amount
      */
@@ -188,7 +197,7 @@ public class Account implements Serializable {
     }
 
     /**
-     * Sets the amount.
+     * Sets the amount this account can goes underwater.
      *
      * @param amount
      *            the new amount

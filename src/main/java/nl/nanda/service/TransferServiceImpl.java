@@ -21,7 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The Class TransferServiceImpl.
+ * The Class TransferServiceImpl (Gateway) exposing Crud methods and do some
+ * validation and error handling.
  */
 @Service
 @Transactional
@@ -55,13 +56,14 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public String createAccount(final String balance,
             final String roodToegestaan, final String accountUser) {
+
         final Account savedAccount = savingAccount(balance, roodToegestaan,
                 accountUser);
         return savedAccount.getAccountUUID().toString();
     }
 
     /**
-     * Converting the String from the upper layer to the approiated Types. After
+     * Converting the String from the upper layer to the destiny Types. After
      * 
      * @param balance
      * @param roodToegestaan
@@ -70,11 +72,31 @@ public class TransferServiceImpl implements TransferService {
      */
     private Account savingAccount(final String balance,
             final String roodToegestaan, final String accountUser) {
-        final Account account = new Account(BigDecimal.valueOf(Long
-                .parseLong(balance)), BigDecimal.valueOf(Long
-                .parseLong(roodToegestaan)), accountUser);
+        final Account account = validateAndCreateAccount(balance,
+                roodToegestaan, accountUser);
         final Account savedAccount = accountRepo.save(account);
         return savedAccount;
+    }
+
+    /**
+     * Validating the Input before creating the Account.
+     * 
+     * @param balance
+     * @param roodToegestaan
+     * @param accountUser
+     * @return Account entity object.
+     */
+    private Account validateAndCreateAccount(final String balance,
+            final String roodToegestaan, final String accountUser) {
+        Account account = null;
+        try {
+            account = new Account(BigDecimal.valueOf(Double
+                    .parseDouble(balance)), BigDecimal.valueOf(Double
+                    .parseDouble(roodToegestaan)), accountUser);
+        } catch (final NumberFormatException e) {
+            throw new AnanieException("Saving account problem ", e);
+        }
+        return account;
     }
 
     /*
@@ -90,6 +112,19 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Account saveAccount(final Account account) {
         return accountRepo.save(account);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.nanda.service.TransferService#updateAccountBalance(double,
+     * java.lang.String)
+     */
+    @Override
+    public void updateAccountBalance(final double saldo, final String uuid) {
+
+        accountRepo.updateAccountBalance(BigDecimal.valueOf(saldo),
+                UUID.fromString(uuid));
     }
 
     /*
@@ -118,6 +153,9 @@ public class TransferServiceImpl implements TransferService {
     @Transactional(readOnly = true)
     public Account getAccount(final String id) {
         final Account account = findAccount(id);
+        if (account == null) {
+            throw new AnanieNotFoundException("Account Not found ");
+        }
         return account;
     }
 
@@ -149,26 +187,19 @@ public class TransferServiceImpl implements TransferService {
     public Integer doTransfer(final String from, final String to,
             final double amount) {
 
-        final Account fromAccount = findAccount(from);
-        final Account toAccount = findAccount(to);
-
-        final Integer transferId = createAndReturnTransfer(fromAccount,
-                toAccount, amount);
+        final Integer transferId = returnTransfer(from, to, amount);
         return transferId;
     }
 
     /**
      * Finding the account to complete Transaction.
      * 
-     * @param from
+     * @param searchAccount
      * @return
      */
-    private Account findAccount(final String from) {
-        final Account account = accountRepo.findByAccount_uuid(UUID
-                .fromString(from));
-        if (account == null) {
-            throw new AnanieNotFoundException("Account Not found");
-        }
+    private Account findAccount(final String searchAccount) {
+        final Account account = accountRepo.findAccountByUuid(UUID
+                .fromString(searchAccount));
         return account;
     }
 
@@ -186,26 +217,26 @@ public class TransferServiceImpl implements TransferService {
     }
 
     /**
-     * Returning the Transfer ID. We can trace the transfer state. If the
-     * transfer is succes full the state of the transfer will be "CONFIRMED".
+     * Returning the Transfer ID so that We can trace the transfer state. If the
+     * transfer is succesfull the state of the transfer will be "CONFIRMED".
      * With the Transfer ID we can find the Transaction.
      * 
      * @param fromAccount
      * @param toAccount
      * @param amount
-     * @return
+     * @return the transfer primary key.
      */
-    private Integer createAndReturnTransfer(final Account fromAccount,
-            final Account toAccount, final double amount) {
+    private Integer returnTransfer(final String from, final String to,
+            final double amount) {
         Integer transferId = null;
-        final Transfer transfer = new Transfer(fromAccount, toAccount);
+        final Transfer transfer = checkAccountAndReturnTransfer(from, to);
         try {
             transfer.startTransfer(BigDecimal.valueOf(amount));
-            accountRepo.save(fromAccount);
-            accountRepo.save(toAccount);
+            accountRepo.save(transfer.getZender());
+            accountRepo.save(transfer.getOntvanger());
             transferId = transferRepo.save(transfer).getEntityId();
-            final Transaction transaction = new Transaction(
-                    fromAccount.getAccountUUID(), transfer);
+            final Transaction transaction = new Transaction(transfer
+                    .getZender().getAccountUUID(), transfer);
             transactionRepo.save(transaction);
         } catch (final AnanieException e) {
             transfer.setState(Status.INSUFFICIENT_FUNDS);
@@ -213,6 +244,37 @@ public class TransferServiceImpl implements TransferService {
             logger.debug("AnanieException ", e);
         }
         return transferId;
+    }
+
+    /**
+     * Creating a Transfer with state "Pending". If one of the accounts is not
+     * found we throw a exception (AnanieNotFoundException). Because the
+     * transfer can't continue without a valid account (see DB constraints).
+     * 
+     * @param from
+     * @param to
+     * @param amount
+     * @return
+     */
+    private Transfer checkAccountAndReturnTransfer(final String from,
+            final String to) {
+
+        final Account accountFrom = findAccount(from);
+        final Account accountTo = findAccount(to);
+
+        final Transfer transfer = new Transfer();
+        if (accountFrom == null || accountTo == null) {
+            transfer.setCredit(UUID.fromString(from));
+            transfer.setDebet(UUID.fromString(to));
+            transfer.setState(Status.ACCOUNT_NOT_FOUND);
+            transferRepo.save(transfer);
+            logger.debug("AnanieNotFoundException Transfer with ID = "
+                    + transfer.getEntityId());
+            throw new AnanieNotFoundException("Account Not found ");
+        }
+        transfer.setZender(accountFrom);
+        transfer.setOntvanger(accountTo);
+        return transfer;
     }
 
     /*
