@@ -22,7 +22,7 @@ public interface TransactionRepository extends
      *            the id
      * @return the transaction
      */
-    public Transaction findByEntityId(Integer id);
+    Transaction findByEntityId(Integer id);
 
     /**
      * Searching for a Transaction with a given unique account id (UUID key).
@@ -31,7 +31,7 @@ public interface TransactionRepository extends
      *            the id
      * @return the transaction
      */
-    public Transaction findByAccount(UUID id);
+    Transaction findByAccount(UUID id);
 
     /**
      * Searching for a Transaction with a given Transfer ID (primary key).
@@ -40,7 +40,7 @@ public interface TransactionRepository extends
      *            the transfer
      * @return the transaction
      */
-    public Transaction findByTransfer(Transfer transfer);
+    Transaction findByTransfer(Transfer transfer);
 
     /**
      * Searching for all Transactions with a given unique account id (UUID key).
@@ -49,7 +49,6 @@ public interface TransactionRepository extends
      *            the id
      * @return the list
      */
-    // @Query("select o from Transaction o where o.account = :uuid")
-    public List<Transaction> findAllByAccount(UUID id);
+    List<Transaction> findAllByAccount(UUID id);
 
 }

@@ -15,7 +15,6 @@ import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
 import nl.nanda.transfer.dao.TransferRepository;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TransferServiceImpl implements TransferService {
-
-    /** The logger. */
-    private final Logger logger = Logger.getLogger(getClass());
 
     /** The account repo. */
     @Autowired
@@ -63,7 +59,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     /**
-     * Converting the String from the upper layer to the destiny Types. After
+     * Converting the String from the upper layer to the destiny Types.
      * 
      * @param balance
      * @param roodToegestaan
@@ -120,6 +116,7 @@ public class TransferServiceImpl implements TransferService {
      * @see nl.nanda.service.TransferService#updateAccountBalance(double,
      * java.lang.String)
      */
+    // TODO: What if the account can't be found.
     @Override
     public void updateAccountBalance(final double saldo, final String uuid) {
 
@@ -218,8 +215,8 @@ public class TransferServiceImpl implements TransferService {
 
     /**
      * Returning the Transfer ID so that We can trace the transfer state. If the
-     * transfer is succesfull the state of the transfer will be "CONFIRMED".
-     * With the Transfer ID we can find the Transaction.
+     * transfer is succesful the state of the transfer will be "CONFIRMED". With
+     * the Transfer ID we can find the Transaction.
      * 
      * @param fromAccount
      * @param toAccount
@@ -232,17 +229,32 @@ public class TransferServiceImpl implements TransferService {
         final Transfer transfer = checkAccountAndReturnTransfer(from, to);
         try {
             transfer.startTransfer(BigDecimal.valueOf(amount));
-            accountRepo.save(transfer.getZender());
-            accountRepo.save(transfer.getOntvanger());
-            transferId = transferRepo.save(transfer).getEntityId();
-            final Transaction transaction = new Transaction(transfer
-                    .getZender().getAccountUUID(), transfer);
-            transactionRepo.save(transaction);
+
         } catch (final AnanieException e) {
             transfer.setState(Status.INSUFFICIENT_FUNDS);
             transferId = transferRepo.save(transfer).getEntityId();
-            logger.debug("AnanieException ", e);
         }
+
+        transferId = createTheTransaction(transfer);
+        return transferId;
+    }
+
+    /**
+     * Here we are making the transfer official. Creating the Transaction that
+     * took place in the Ananie Application.
+     * 
+     * 
+     * @param transfer
+     * @return
+     */
+    private Integer createTheTransaction(final Transfer transfer) {
+        Integer transferId;
+        accountRepo.save(transfer.getZender());
+        accountRepo.save(transfer.getOntvanger());
+        transferId = transferRepo.save(transfer).getEntityId();
+        final Transaction transaction = new Transaction(transfer.getZender()
+                .getAccountUUID(), transfer);
+        transactionRepo.save(transaction);
         return transferId;
     }
 
@@ -268,8 +280,6 @@ public class TransferServiceImpl implements TransferService {
             transfer.setDebet(UUID.fromString(to));
             transfer.setState(Status.ACCOUNT_NOT_FOUND);
             transferRepo.save(transfer);
-            logger.debug("AnanieNotFoundException Transfer with ID = "
-                    + transfer.getEntityId());
             throw new AnanieNotFoundException("Account Not found ");
         }
         transfer.setZender(accountFrom);

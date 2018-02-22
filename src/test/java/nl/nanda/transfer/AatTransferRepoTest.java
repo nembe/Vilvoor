@@ -58,6 +58,6 @@ public class AatTransferRepoTest extends AbstractConfig {
         assertEquals("CONFIRMED", trans.getState());
 
         assertNotNull(trans.getCredit());
-        assertEquals(Integer.valueOf(1), transferRepo.save(trans).getEntityId());
+        assertTrue(transferRepo.save(trans).getEntityId() != 0);
     }
 }

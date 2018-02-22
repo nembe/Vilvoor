@@ -22,6 +22,8 @@ import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
 import nl.nanda.status.Status;
 
+import org.springframework.validation.annotation.Validated;
+
 /**
  * An Transfer for are to a account of the Ananie Bank. For updating the Account
  * entity we delegate that to the Amount class. The Status of the Transfer is
@@ -33,6 +35,7 @@ import nl.nanda.status.Status;
  */
 @Entity
 @Table(name = "T_TRANSFER")
+@Validated
 public class Transfer {
 
     /** The entity id. */
@@ -59,34 +62,36 @@ public class Transfer {
     /** The day. */
     @Column(name = "TRANSFER_DATE")
     @NotNull
-    private final Date day;
+    private Date day;
 
     /** The totaal. */
     @Embedded
     @AttributeOverride(name = "totaal", column = @Column(name = "AMOUNT"))
     @NotNull
     @Valid
-    private final Amount totaal;
+    private Amount totaal;
 
     @Transient
+    @Valid
     private Account zender;
 
     @Transient
+    @Valid
     private Account ontvanger;
 
     /**
      * Instantiates a new transfer. Before saving this transfer the accounts
-     * UUID's have to be set first. We also have to put the accounts objects
-     * Before transfering money not needed for only saving in DB.
+     * UUID's have to be set first.
      * 
-     * This can be done from the Service layer especially when transfering is
+     * We need to put the accounts objects Before transferring money not needed
+     * for only saving in DB.
+     * 
+     * This can be done from the Service layer especially when transferring is
      * required. Use the other constructor if needed to transfer money.
      * 
      */
     public Transfer() {
-        this.totaal = new Amount(BigDecimal.valueOf(0));
-        this.state = Status.PENDING;
-        this.day = Date.valueOf(LocalDate.now());
+        createTransfer();
     }
 
     /**
@@ -99,13 +104,17 @@ public class Transfer {
      *            = the ontvanger account entity object (receiving money).
      */
     public Transfer(@Valid final Account zender, @Valid final Account ontvanger) {
-        this.totaal = new Amount(BigDecimal.valueOf(0));
-        this.state = Status.PENDING;
-        this.day = Date.valueOf(LocalDate.now());
+        createTransfer();
         this.debet = ontvanger.getAccountUUID();
         this.credit = zender.getAccountUUID();
         this.zender = zender;
         this.ontvanger = ontvanger;
+    }
+
+    private void createTransfer() {
+        this.totaal = new Amount(BigDecimal.valueOf(0));
+        this.state = Status.PENDING;
+        this.day = Date.valueOf(LocalDate.now());
     }
 
     /**
@@ -226,7 +235,7 @@ public class Transfer {
      * 
      * @param zender
      */
-    public void setZender(final Account zender) {
+    public void setZender(@Valid final Account zender) {
         this.zender = zender;
         this.credit = zender.getAccountUUID();
     }
@@ -243,7 +252,7 @@ public class Transfer {
      * 
      * @param ontvanger
      */
-    public void setOntvanger(final Account ontvanger) {
+    public void setOntvanger(@Valid final Account ontvanger) {
         this.ontvanger = ontvanger;
         this.debet = ontvanger.getAccountUUID();
     }

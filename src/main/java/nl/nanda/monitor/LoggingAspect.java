@@ -1,26 +1,34 @@
 package nl.nanda.monitor;
 
-import org.apache.log4j.Logger;
+import javax.validation.ConstraintViolationException;
+
+import nl.nanda.exception.AnanieException;
+import nl.nanda.exception.AnanieNotFoundException;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.jamonapi.Monitor;
 
 /**
- * The Class LoggingAspect.
+ * The Class LoggingAspect for monitoring the AAT application.
  */
 @Aspect
 @Component
 public class LoggingAspect {
 
     /** The logger. */
-    private final Logger logger = Logger.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     /** The monitor factory. */
     private final AnanieMonitor monitorFactory;
@@ -38,28 +46,88 @@ public class LoggingAspect {
     }
 
     /**
-     * Impl logging.
-     *
+     * Logging the parameters and values when trying a transfer.
+     * 
      * @param joinPoint
-     *            the join point
      */
-    @Before("execution(public * nl.nanda.*.*Repository.find*(..))")
-    public void implLogging(final JoinPoint joinPoint) {
-        logger.info("'Before' advice implementation - "
-                + joinPoint.getTarget().getClass() + "; Executing before "
+    @Before("execution(public * nl..TransferServiceImpl.doTransfer(..)) && args(from,to,amount)")
+    public void implLogging(final JoinPoint joinPoint, final String from,
+            final String to, final double amount) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("'Before' advice implementation - ");
+        sb.append(joinPoint.getTarget().getClass());
+        sb.append("; Executing before ");
+        sb.append(joinPoint.getSignature().getName());
+        sb.append("() method with + arguments = ");
+        sb.append("from = ");
+        sb.append(from);
+        sb.append("; to = ");
+        sb.append(to);
+        sb.append("; amount = ");
+        sb.append(amount);
+        logger.info(sb.toString());
+    }
+
+    /**
+     * Report the error ConstraintViolationException.
+     * 
+     * @param joinPoint
+     */
+    @AfterThrowing(value = "execution(public * nl..TransferServiceImpl.*(..))", throwing = "e")
+    public void reportConstraintViolationException(final JoinPoint joinPoint,
+            final ConstraintViolationException e) {
+
+        logger.info("'Report' Constraint Violation - "
+                + joinPoint.getTarget().getClass() + "; Executing error "
                 + joinPoint.getSignature().getName() + "() method");
     }
 
     /**
-     * Monitor.
-     *
-     * @param repositoryMethod
-     *            the repository method
-     * @return the object
-     * @throws Throwable
-     *             the throwable
+     * Report the error AnanieException.
+     * 
+     * @param joinPoint
      */
-    @Around("execution(public * nl.nanda.service.TransferServiceImpl.doTransfer(..))")
+    @AfterThrowing(value = "createAccount()", throwing = "e")
+    public void reportAnanieException(final JoinPoint joinPoint,
+            final AnanieException e) {
+
+        logger.info("'Report' Ananie Exception - "
+                + joinPoint.getTarget().getClass() + "; Executing error "
+                + joinPoint.getSignature().getName() + "() method");
+    }
+
+    @Pointcut("execution(* nl..TransferServiceImpl.createAccount(..))")
+    public void createAccount() {
+
+    }
+
+    @Pointcut("execution(* nl..TransferServiceImpl.doTransfer(..))")
+    public void doTransfer() {
+
+    }
+
+    /**
+     * Report the error AnanieNotFoundException.
+     * 
+     * @param joinPoint
+     */
+    @AfterThrowing(value = "doTransfer()", throwing = "e")
+    public void reportAnanieNotFoundException(final JoinPoint joinPoint,
+            final AnanieNotFoundException e) {
+
+        logger.info("'Report' Ananie Not Found Exception - "
+                + joinPoint.getTarget().getClass() + "; Executing error "
+                + joinPoint.getSignature().getName() + "() method");
+    }
+
+    /**
+     * Monitor how long it takes to complete a transfer.
+     * 
+     * @param repositoryMethod
+     * @return
+     * @throws Throwable
+     */
+    @Around("doTransfer()")
     public Object monitor(final ProceedingJoinPoint repositoryMethod)
             throws Throwable {
         final String name = createJoinPointTraceName(repositoryMethod);

@@ -11,11 +11,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
- * An Account Repository that uses JPA to find accounts. Spring DATA is used
- * here.
+ * The Account Repository that uses Spring Data JPA to find accounts.
  *
  */
 public interface AccountRepository extends JpaRepository<Account, Integer>,
@@ -29,17 +27,17 @@ public interface AccountRepository extends JpaRepository<Account, Integer>,
      * @return the account
      */
     @Query("select u from Account u where u.entityId = :id")
-    public Account findAccountById(@Param("id") Integer accountId);
+    Account findAccountById(@Param("id") Integer accountId);
 
     /**
-     * Find by account uuid.
+     * Find account by uuid.
      *
      * @param account_uuid
      *            the account uuid
      * @return the account
      */
     @Query("select u from Account u where u.account_uuid = :uuid")
-    public Account findAccountByUuid(@Param("uuid") UUID account_uuid);
+    Account findAccountByUuid(@Param("uuid") UUID account_uuid);
 
     /**
      * Find account by name.
@@ -49,21 +47,24 @@ public interface AccountRepository extends JpaRepository<Account, Integer>,
      * @return the account
      */
     @Query("select u from Account u where u.name = :name")
-    public Account findAccountByName(@Param("name") String name);
+    Account findAccountByName(@Param("name") String name);
 
     /**
-     * Find all by id.
+     * Find all Accounts by id.
      */
     @Query("select o from Account o")
-    public void findAllById();
+    void findAllById();
 
     /**
+     * Clients can update an Account without to have or need to have an JPA
+     * manage Account entity.
+     * 
      * @param saldo
      * @param uuid
      */
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Account o SET o.balance = :saldo where o.account_uuid = :uuid")
-    public void updateAccountBalance(@Param("saldo") BigDecimal saldo,
+    void updateAccountBalance(@Param("saldo") BigDecimal saldo,
             @Param("uuid") UUID uuid);
 
 }

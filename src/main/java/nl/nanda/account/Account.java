@@ -10,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -63,10 +62,6 @@ public class Account implements Serializable {
     @Column(name = "NAME")
     @NotNull
     private String name;
-
-    /** The amount. */
-    @Transient
-    private BigDecimal amount;
 
     @Version
     private Integer version;
@@ -194,16 +189,6 @@ public class Account implements Serializable {
      */
     public BigDecimal getAmount() {
         return this.balance.add(overdraft);
-    }
-
-    /**
-     * Sets the amount this account can goes underwater.
-     *
-     * @param amount
-     *            the new amount
-     */
-    public void setAmount(final BigDecimal amount) {
-        this.amount = amount;
     }
 
     /**

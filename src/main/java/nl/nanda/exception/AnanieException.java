@@ -1,7 +1,7 @@
 package nl.nanda.exception;
 
 /**
- * The Class SvaException.
+ * The Class AnanieException to stop further processing of the transfer.
  */
 public class AnanieException extends RuntimeException {
 
@@ -9,7 +9,7 @@ public class AnanieException extends RuntimeException {
     private static final long serialVersionUID = -4786107113012806296L;
 
     /**
-     * Instantiates a new sva exception.
+     * Instantiates a new ananie exception.
      *
      * @param ex
      *            the ex

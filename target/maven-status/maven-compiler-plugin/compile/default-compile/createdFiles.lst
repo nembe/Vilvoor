@@ -6,10 +6,8 @@ nl\nanda\service\TransferService.class
 nl\nanda\config\AccountsConfig.class
 nl\nanda\account\Account.class
 nl\nanda\transaction\Transaction.class
-nl\nanda\account\AccountId.class
 nl\nanda\transfer\Transfer.class
 nl\nanda\exception\AnanieException.class
-nl\nanda\account\Account_.class
 nl\nanda\account\Amount.class
 nl\nanda\monitor\AnanieMonitor.class
 nl\nanda\exception\AnanieNotFoundException.class
