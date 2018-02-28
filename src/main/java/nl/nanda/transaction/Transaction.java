@@ -83,6 +83,10 @@ public class Transaction {
         return account;
     }
 
+    public void setAccount(final UUID account) {
+        this.account = account;
+    }
+
     /**
      * Return the Transfer of the transaction.
      *

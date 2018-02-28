@@ -33,7 +33,7 @@
 	</Appenders>
 
 	<Loggers>
-		<AsyncLogger name="nl.nanda" level="info">
+		<AsyncLogger name="nl.nanda">
 		</AsyncLogger>
 		
 		<!-- 3rdparty Loggers  level="debug" additivity="true" -->

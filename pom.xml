@@ -32,7 +32,7 @@ Spring application testing Spring Data JPA and Spring AOP</description>
 		<developer>
 			<id>vdoenda</id>
 			<name>Vincent Dundas</name>
-			<email>vinne80@hotmail.com</email>			
+			<email>vinne80@hotmail.com</email>
 			<roles>
 				<role>Project lead</role>
 			</roles>
@@ -53,6 +53,15 @@ Spring application testing Spring Data JPA and Spring AOP</description>
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/log4j2.xml</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -155,5 +164,5 @@ Spring application testing Spring Data JPA and Spring AOP</description>
 			<layout>default</layout>
 		</repository>
 	</repositories>
-	
+
 </project>

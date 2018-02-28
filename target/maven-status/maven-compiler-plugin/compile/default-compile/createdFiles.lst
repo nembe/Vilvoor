@@ -4,6 +4,7 @@ nl\nanda\transaction\dao\TransactionRepository.class
 nl\nanda\config\SystemConfig.class
 nl\nanda\service\TransferService.class
 nl\nanda\config\AccountsConfig.class
+nl\nanda\service\empty\TransferNull.class
 nl\nanda\account\Account.class
 nl\nanda\transaction\Transaction.class
 nl\nanda\transfer\Transfer.class
@@ -11,7 +12,9 @@ nl\nanda\exception\AnanieException.class
 nl\nanda\account\Amount.class
 nl\nanda\monitor\AnanieMonitor.class
 nl\nanda\exception\AnanieNotFoundException.class
+nl\nanda\service\empty\TransactionNull.class
 nl\nanda\account\dao\AccountRepository.class
 nl\nanda\monitor\LoggingAspect.class
 nl\nanda\config\AspectsConfig.class
+nl\nanda\service\empty\AccountNull.class
 nl\nanda\transfer\dao\TransferRepository.class

@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 /**
  * 
- * The Account Repository that uses Spring Data JPA to find accounts.
+ * The Account Repository that uses Spring Data JPA to find and insert accounts.
  *
  */
 public interface AccountRepository extends JpaRepository<Account, Integer>,

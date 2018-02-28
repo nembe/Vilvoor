@@ -9,6 +9,9 @@ import nl.nanda.account.Account;
 import nl.nanda.account.dao.AccountRepository;
 import nl.nanda.exception.AnanieException;
 import nl.nanda.exception.AnanieNotFoundException;
+import nl.nanda.service.empty.AccountNull;
+import nl.nanda.service.empty.TransactionNull;
+import nl.nanda.service.empty.TransferNull;
 import nl.nanda.status.Status;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transaction.dao.TransactionRepository;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TransferServiceImpl implements TransferService {
 
+    private final String uuidNullString = "00000000-0000-0000-0000-89323971e98a";
     /** The account repo. */
     @Autowired
     public AccountRepository accountRepo;
@@ -149,9 +153,10 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(final String id) {
-        final Account account = findAccount(id);
+        Account account = findAccount(id);
         if (account == null) {
-            throw new AnanieNotFoundException("Account Not found ");
+            account = new AccountNull(BigDecimal.valueOf(0),
+                    "Account not available");
         }
         return account;
     }
@@ -215,8 +220,8 @@ public class TransferServiceImpl implements TransferService {
 
     /**
      * Returning the Transfer ID so that We can trace the transfer state. If the
-     * transfer is succesful the state of the transfer will be "CONFIRMED". With
-     * the Transfer ID we can find the Transaction.
+     * transfer is successful the state of the transfer will be "CONFIRMED".
+     * With the Transfer ID we can find the "confirmed" Transaction.
      * 
      * @param fromAccount
      * @param toAccount
@@ -225,17 +230,15 @@ public class TransferServiceImpl implements TransferService {
      */
     private Integer returnTransfer(final String from, final String to,
             final double amount) {
-        Integer transferId = null;
+
         final Transfer transfer = checkAccountAndReturnTransfer(from, to);
-        try {
-            transfer.startTransfer(BigDecimal.valueOf(amount));
+        transfer.startTransfer(BigDecimal.valueOf(amount));
+        final Integer transferId = transferRepo.save(transfer).getEntityId();
 
-        } catch (final AnanieException e) {
-            transfer.setState(Status.INSUFFICIENT_FUNDS);
-            transferId = transferRepo.save(transfer).getEntityId();
+        if ("CONFIRMED".equals(transfer.getState())) {
+            saveAccontsToCommitTransfer(transfer);
+            createTheTransaction(transfer);
         }
-
-        transferId = createTheTransaction(transfer);
         return transferId;
     }
 
@@ -247,15 +250,22 @@ public class TransferServiceImpl implements TransferService {
      * @param transfer
      * @return
      */
-    private Integer createTheTransaction(final Transfer transfer) {
-        Integer transferId;
-        accountRepo.save(transfer.getZender());
-        accountRepo.save(transfer.getOntvanger());
-        transferId = transferRepo.save(transfer).getEntityId();
+    private void createTheTransaction(final Transfer transfer) {
+
         final Transaction transaction = new Transaction(transfer.getZender()
                 .getAccountUUID(), transfer);
         transactionRepo.save(transaction);
-        return transferId;
+
+    }
+
+    /**
+     * We update the account table with the new balance.
+     * 
+     * @param transfer
+     */
+    private void saveAccontsToCommitTransfer(final Transfer transfer) {
+        accountRepo.save(transfer.getZender());
+        accountRepo.save(transfer.getOntvanger());
     }
 
     /**
@@ -314,9 +324,12 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Transfer findTransferById(final Integer id) {
-        final Transfer transfer = transferRepo.findByEntityId(id);
+        Transfer transfer = transferRepo.findByEntityId(id);
         if (transfer == null) {
-            throw new AnanieNotFoundException("Transfer Not found");
+            transfer = new TransferNull();
+            transfer.setCredit(UUID.fromString(uuidNullString));
+            transfer.setDebet(UUID.fromString(uuidNullString));
+            transfer.setState(Status.NOT_AVAILABLE);
         }
         return transfer;
     }
@@ -333,9 +346,12 @@ public class TransferServiceImpl implements TransferService {
     @Transactional(readOnly = true)
     public Transfer findTransferByDate(final Date day) {
 
-        final Transfer transfer = transferRepo.findByDay(day);
+        Transfer transfer = transferRepo.findByDay(day);
         if (transfer == null) {
-            throw new AnanieNotFoundException("Transfer Not found");
+            transfer = new TransferNull();
+            transfer.setCredit(UUID.fromString(uuidNullString));
+            transfer.setDebet(UUID.fromString(uuidNullString));
+            transfer.setState(Status.NOT_AVAILABLE);
         }
         return transfer;
     }
@@ -366,7 +382,13 @@ public class TransferServiceImpl implements TransferService {
     @Transactional(readOnly = true)
     public Transaction findTransaction(final Integer id) {
 
-        return transactionRepo.findByEntityId(id);
+        Transaction transaction = transactionRepo.findByEntityId(id);
+        if (transaction == null) {
+            transaction = new TransactionNull();
+            transaction.setEntityId(-1);
+            transaction.setAccount(UUID.fromString(uuidNullString));
+        }
+        return transaction;
     }
 
     /*
@@ -384,7 +406,14 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Transaction findTransactionByAccount(final String id) {
-        return transactionRepo.findByAccount(UUID.fromString(id));
+        Transaction transaction = transactionRepo.findByAccount(UUID
+                .fromString(id));
+        if (transaction == null) {
+            transaction = new TransactionNull();
+            transaction.setEntityId(-1);
+            transaction.setAccount(UUID.fromString(uuidNullString));
+        }
+        return transaction;
     }
 
     /*
@@ -402,7 +431,14 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Transaction findTransactionByTransfer(final Transfer transfer) {
-        return transactionRepo.findByTransfer(transfer);
+        Transaction transaction = transactionRepo.findByTransfer(transfer);
+        if (transaction == null) {
+            transaction = new TransactionNull();
+            transaction.setEntityId(-1);
+            transaction.setAccount(UUID.fromString(uuidNullString));
+        }
+
+        return transaction;
     }
 
     /*

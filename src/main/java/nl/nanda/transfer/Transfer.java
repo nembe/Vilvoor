@@ -22,8 +22,6 @@ import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
 import nl.nanda.status.Status;
 
-import org.springframework.validation.annotation.Validated;
-
 /**
  * An Transfer for are to a account of the Ananie Bank. For updating the Account
  * entity we delegate that to the Amount class. The Status of the Transfer is
@@ -35,7 +33,6 @@ import org.springframework.validation.annotation.Validated;
  */
 @Entity
 @Table(name = "T_TRANSFER")
-@Validated
 public class Transfer {
 
     /** The entity id. */
@@ -111,6 +108,9 @@ public class Transfer {
         this.ontvanger = ontvanger;
     }
 
+    /**
+     * Helper method DRY.
+     */
     private void createTransfer() {
         this.totaal = new Amount(BigDecimal.valueOf(0));
         this.state = Status.PENDING;
@@ -210,7 +210,8 @@ public class Transfer {
     }
 
     /**
-     * Starting the transfer we need Two Accounts entities objects.
+     * Starting the transfer we need Two Accounts entities objects. We can track
+     * the transfer on its state.
      * 
      * @param value
      *            = The total that must be transfer between accounts.
@@ -218,9 +219,12 @@ public class Transfer {
     public void startTransfer(final BigDecimal value) {
 
         this.totaal.setTotaal(value);
-        this.totaal.creditAccount(zender);
-        this.totaal.debetAccount(ontvanger);
-        this.state = Status.CONFIRMED;
+        final Status status = totaal.creditAccount(zender);
+        if ("CONFIRMED".equals(status.valueOf())) {
+            this.totaal.debetAccount(ontvanger);
+        }
+        this.state = status;
+
     }
 
     /**
@@ -235,7 +239,7 @@ public class Transfer {
      * 
      * @param zender
      */
-    public void setZender(@Valid final Account zender) {
+    public void setZender(final Account zender) {
         this.zender = zender;
         this.credit = zender.getAccountUUID();
     }
@@ -252,7 +256,7 @@ public class Transfer {
      * 
      * @param ontvanger
      */
-    public void setOntvanger(@Valid final Account ontvanger) {
+    public void setOntvanger(final Account ontvanger) {
         this.ontvanger = ontvanger;
         this.debet = ontvanger.getAccountUUID();
     }

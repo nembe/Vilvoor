@@ -45,12 +45,45 @@ public class LoggingAspect {
         this.monitorFactory = monitorFactory;
     }
 
+    // CGLIB Proxy
+    @Pointcut("target(nl.nanda.service.TransferService)")
+    public void serviceMethod() {
+    }
+
+    @Pointcut("execution(* *..*(..))")
+    public void allMethods() {
+    }
+
+    @Pointcut("execution(* *..createAccount(..))")
+    public void createAccount() {
+    }
+
+    @Pointcut("execution(* *..doTransfer(..))")
+    public void doTransfer() {
+
+    }
+
+    @Pointcut("serviceMethod() && createAccount()")
+    public void doServiceAccountLogging() {
+
+    }
+
+    @Pointcut("serviceMethod() && doTransfer()")
+    public void doServiceTransferLogging() {
+
+    }
+
+    @Pointcut("serviceMethod() && allMethods()")
+    public void all() {
+
+    }
+
     /**
      * Logging the parameters and values when trying a transfer.
      * 
      * @param joinPoint
      */
-    @Before("execution(public * nl..TransferServiceImpl.doTransfer(..)) && args(from,to,amount)")
+    @Before("doTransfer() && args(from,to,amount)")
     public void implLogging(final JoinPoint joinPoint, final String from,
             final String to, final double amount) {
         final StringBuilder sb = new StringBuilder();
@@ -73,13 +106,13 @@ public class LoggingAspect {
      * 
      * @param joinPoint
      */
-    @AfterThrowing(value = "execution(public * nl..TransferServiceImpl.*(..))", throwing = "e")
+    @AfterThrowing(value = "all()", throwing = "e")
     public void reportConstraintViolationException(final JoinPoint joinPoint,
             final ConstraintViolationException e) {
 
         logger.info("'Report' Constraint Violation - "
                 + joinPoint.getTarget().getClass() + "; Executing error "
-                + joinPoint.getSignature().getName() + "() method");
+                + joinPoint.getSignature().getName() + "() method", e);
     }
 
     /**
@@ -87,23 +120,13 @@ public class LoggingAspect {
      * 
      * @param joinPoint
      */
-    @AfterThrowing(value = "createAccount()", throwing = "e")
+    @AfterThrowing(value = "all()", throwing = "e")
     public void reportAnanieException(final JoinPoint joinPoint,
             final AnanieException e) {
 
         logger.info("'Report' Ananie Exception - "
                 + joinPoint.getTarget().getClass() + "; Executing error "
-                + joinPoint.getSignature().getName() + "() method");
-    }
-
-    @Pointcut("execution(* nl..TransferServiceImpl.createAccount(..))")
-    public void createAccount() {
-
-    }
-
-    @Pointcut("execution(* nl..TransferServiceImpl.doTransfer(..))")
-    public void doTransfer() {
-
+                + joinPoint.getSignature().getName() + "() method", e);
     }
 
     /**
@@ -111,13 +134,13 @@ public class LoggingAspect {
      * 
      * @param joinPoint
      */
-    @AfterThrowing(value = "doTransfer()", throwing = "e")
+    @AfterThrowing(pointcut = "all()", throwing = "e")
     public void reportAnanieNotFoundException(final JoinPoint joinPoint,
             final AnanieNotFoundException e) {
 
         logger.info("'Report' Ananie Not Found Exception - "
                 + joinPoint.getTarget().getClass() + "; Executing error "
-                + joinPoint.getSignature().getName() + "() method");
+                + joinPoint.getSignature().getName() + "() method", e);
     }
 
     /**

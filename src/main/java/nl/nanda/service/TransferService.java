@@ -22,7 +22,9 @@ import org.springframework.validation.annotation.Validated;
  * used in the UI layer. It is not possible to use the Status, Amount, and the
  * Repositories outside the Service Layer. The only two exceptions that the
  * client can handle from these operations are ConstraintViolationException,
- * AnanieException(parse error) and AnanieNotFoundException
+ * AnanieException(parse error) and AnanieNotFoundException We don't return a
+ * empty "NULL" instead we throw a exception, the client don't have to check for
+ * NULL.
  *
  */
 @Validated

@@ -8,8 +8,8 @@ import nl.nanda.exception.AnanieException;
 
 public enum Status {
 
-    ACCOUNT_NOT_FOUND(0), CONFIRMED(1), INSUFFICIENT_FUNDS(2), PENDING(3);
-
+    ACCOUNT_NOT_FOUND(0), CONFIRMED(1), INSUFFICIENT_FUNDS(2), PENDING(3), NOT_AVAILABLE(
+            4);
     /** The state. */
     private Integer state;
 
@@ -46,6 +46,9 @@ public enum Status {
             break;
         case 3:
             status = "PENDING";
+            break;
+        case 4:
+            status = "NOT_AVAILABLE";
             break;
 
         default:

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="nl.nanda.transfer.AatTransferRepoTest" time="0.04" tests="2" errors="0" skipped="0" failures="0">
+<testsuite name="nl.nanda.transfer.AatTransferRepoTest" time="0.051" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_40\jre\bin"/>
@@ -28,7 +28,7 @@
     <property name="os.name" value="Windows 7"/>
     <property name="classworlds.conf" value="C:\Program Files\apache-maven-3.3.1\bin\m2.conf"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_40\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\Common Files\Teleca Shared;D:\Subversion Client;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\PuTTY\;C:\Program Files\Java\jdk1.8.0_40\bin;C:\Program Files\apache-maven-3.3.1\bin;D:\data\RabbitMQ\rabbitmq_server-3.7.3\sbin;D:\data\NPM\node-v8.9.4-win-x64;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\Common Files\Teleca Shared;D:\Subversion Client;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\PuTTY\;C:\Program Files\Java\jdk1.8.0_40\bin;C:\Program Files\apache-maven-3.3.1\bin;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_40\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\Common Files\Teleca Shared;D:\Subversion Client;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\PuTTY\;C:\Program Files\Java\jdk1.8.0_40\bin;C:\Program Files\apache-maven-3.3.1\bin;D:\data\RabbitMQ\rabbitmq_server-3.7.3\sbin;D:\data\NPM\node-v8.9.4-win-x64;D:\data\Spring-Boot-CLI\spring-1.5.9.RELEASE\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\Common Files\Teleca Shared;D:\Subversion Client;C:\Program Files (x86)\Skype\Phone\;C:\Program Files\PuTTY\;C:\Program Files\Java\jdk1.8.0_40\bin;C:\Program Files\apache-maven-3.3.1\bin;."/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="52.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
@@ -62,6 +62,6 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase name="testTransferRepo" classname="nl.nanda.transfer.AatTransferRepoTest" time="0.032"/>
-  <testcase name="testTransfer" classname="nl.nanda.transfer.AatTransferRepoTest" time="0.008"/>
+  <testcase name="testTransferRepo" classname="nl.nanda.transfer.AatTransferRepoTest" time="0.022"/>
+  <testcase name="testTransfer" classname="nl.nanda.transfer.AatTransferRepoTest" time="0.029"/>
 </testsuite>

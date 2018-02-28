@@ -101,11 +101,14 @@ public class AatTransferServiceTest extends AbstractConfig {
 
     /**
      * Test transfer service not found account. Which the client can anticipate
-     * on (AnanieNotFoundException).
+     * on the object AccountNull.
      */
-    @Test(expected = AnanieNotFoundException.class)
+    @Test
     public void testTransferServiceNotFoundAccount() {
-        transferService.getAccount("6ebb8693-0000-0000-80e1-89323971e98a");
+        final Account accountNull = transferService
+                .getAccount("6ebb8693-0000-0000-80e1-89323971e98a");
+        assertTrue("Account not available".equalsIgnoreCase(accountNull
+                .getName()));
     }
 
     /**
@@ -155,6 +158,7 @@ public class AatTransferServiceTest extends AbstractConfig {
      * Test overdraft of the account, the transfer cannot complete.
      */
     @Test
+    @Rollback(true)
     public void testTransferServiceOverdraft() {
 
         final String accountTheo = transferService.createAccount("200", "10",
@@ -167,6 +171,20 @@ public class AatTransferServiceTest extends AbstractConfig {
         assertEquals("INSUFFICIENT_FUNDS",
                 transferService.findTransferById(transferTransactionId)
                         .getState());
+    }
+
+    /**
+     * We don't want the client dealing with NULL checks, the client can trust
+     * us we return a TransactionNull Object.
+     */
+    @Rollback(true)
+    @Test
+    public void testTransferServiceValidationReturningNull() {
+        final String accountTheo = transferService.createAccount("200", "10",
+                "Theo");
+        final Transaction transactionNull = transferService
+                .findTransactionByAccount(accountTheo);
+        assertTrue(transactionNull.getEntityId() == -1);
     }
 
     /**

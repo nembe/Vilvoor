@@ -69,7 +69,7 @@ public class SystemConfig {
      */
     @Bean
     public DataSource dataSource() {
-        return (new EmbeddedDatabaseBuilder())
+        return new EmbeddedDatabaseBuilder()
                 .addScript("classpath:testdb/schema.sql")
                 .addScript("classpath:testdb/data.sql").build();
 

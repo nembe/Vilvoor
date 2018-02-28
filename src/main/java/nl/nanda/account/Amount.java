@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
-import nl.nanda.exception.AnanieException;
+import nl.nanda.status.Status;
 
 /**
  * The Class Amount where the Total of the Transaction is calculated. After
@@ -50,19 +50,19 @@ public class Amount implements Serializable {
     }
 
     /**
-     * Credit the account that started the transfer. If a Exception occur we
-     * deal with that in the Service layer. The service layer will noticed the
-     * upper layers.
+     * Credit the account that started the transfer. The service layer will
+     * noticed the upper layers if the transfer finish successful.
      *
      * @param account
      *            the account that must be credit.
      */
-    public void creditAccount(final Account account) {
+    public Status creditAccount(final Account account) {
         final BigDecimal newAmount = account.getAmount().subtract(totaal);
         if (newAmount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new AnanieException("Geen Extra voor meneer of mevrouw");
+            return Status.INSUFFICIENT_FUNDS;
         }
         account.setBalance(newAmount.subtract(account.getOverdraft()));
+        return Status.CONFIRMED;
     }
 
     /**
