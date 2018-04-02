@@ -33,11 +33,11 @@
 	</Appenders>
 
 	<Loggers>
-		<AsyncLogger name="nl.nanda">
+		<AsyncLogger name="nl.nanda" level="debug">
 		</AsyncLogger>
 		
 		<!-- 3rdparty Loggers  level="debug" additivity="true" -->
-		<AsyncLogger name="org.springframework" >
+		<AsyncLogger name="org.springframework" level="debug">
         </AsyncLogger>
 
 		<AsyncLogger name="org.springframework.jdbc">

@@ -12,8 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Uses Spring Data JPA to retrieved Transactions.
  *
  */
-public interface TransactionRepository extends
-        JpaRepository<Transaction, Integer> {
+public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
     /**
      * Searching for a Transaction with a given ID (primary key).
@@ -25,13 +24,14 @@ public interface TransactionRepository extends
     Transaction findByEntityId(Integer id);
 
     /**
-     * Searching for a Transaction with a given unique account id (UUID key).
+     * Searching for a All Transactions with a given unique account id (UUID
+     * key).
      *
      * @param id
      *            the id
      * @return the transaction
      */
-    Transaction findByAccount(UUID id);
+    List<Transaction> findByAccount(UUID id);
 
     /**
      * Searching for a Transaction with a given Transfer ID (primary key).
@@ -41,14 +41,5 @@ public interface TransactionRepository extends
      * @return the transaction
      */
     Transaction findByTransfer(Transfer transfer);
-
-    /**
-     * Searching for all Transactions with a given unique account id (UUID key).
-     *
-     * @param id
-     *            the id
-     * @return the list
-     */
-    List<Transaction> findAllByAccount(UUID id);
 
 }

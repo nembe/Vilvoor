@@ -1,6 +1,0 @@
-nl\nanda\account\AccountFactory.class
-nl\nanda\transaction\AatTransactionRepoTest.class
-nl\nanda\config\AbstractConfig.class
-nl\nanda\service\AatTransferServiceTest.class
-nl\nanda\account\AatAccountRepoTest.class
-nl\nanda\transfer\AatTransferRepoTest.class

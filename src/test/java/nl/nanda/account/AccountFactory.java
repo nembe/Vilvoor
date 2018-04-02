@@ -1,6 +1,7 @@
 package nl.nanda.account;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * Creates accounts Objects for testing.
@@ -23,6 +24,7 @@ public class AccountFactory {
     static public Account createAccounts(final double balance,
             final double overdraft, final String name) {
 
+        final UUID accountUUID = UUID.randomUUID();
         Account account = null;
         if (overdraft == 0) {
             account = new Account(BigDecimal.valueOf(balance), name);
@@ -30,7 +32,7 @@ public class AccountFactory {
             account = new Account(BigDecimal.valueOf(balance),
                     BigDecimal.valueOf(overdraft), name);
         }
-
+        account.setAccountUUID(accountUUID);
         return account;
     }
 

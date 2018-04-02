@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolationException;
 
 import nl.nanda.account.Account;
+import nl.nanda.account.AccountFactory;
 import nl.nanda.config.AbstractConfig;
 import nl.nanda.exception.AnanieException;
 import nl.nanda.exception.AnanieNotFoundException;
@@ -33,6 +34,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @Transactional
 public class AatTransferServiceTest extends AbstractConfig {
 
+    private final static String FIRST_ACCOUNT = "6ebb8693-7179-4e04-80e1-89323971e98a";
+    private final static String NEP_ACCOUNT = "6ebb8693-0000-0000-80e1-89323971e98a";
+
     /**
      * Create a account and try to receive this account based on the accounts
      * UUID.
@@ -40,8 +44,7 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Test
     public void testTransferServiceAccount() {
 
-        final String accountUUID = transferService.createAccount("200", "10",
-                "Theo");
+        final String accountUUID = transferService.createAccount("200", "10", "Theo");
 
         assertEquals("Theo", transferService.getAccount(accountUUID).getName());
     }
@@ -63,12 +66,10 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Test
     public void testTransferServiceSaveAccount() {
 
-        final Account account = new Account(BigDecimal.valueOf(1000.50),
-                BigDecimal.valueOf(21.00), "Nice");
+        final Account account = AccountFactory.createAccounts(1000.50, 21.00, "Nice");
         transferService.saveAccount(account);
 
-        assertTrue(1000.50 == transferService.findAccountByName("Nice")
-                .getBalance().doubleValue());
+        assertTrue(1000.50 == transferService.findAccountByName("Nice").getBalance().doubleValue());
 
     }
 
@@ -79,8 +80,7 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Test(expected = ConstraintViolationException.class)
     public void testSavingAccountNotValid() {
 
-        final Account account = new Account(BigDecimal.valueOf(1000.50),
-                BigDecimal.valueOf(21.00), null);
+        final Account account = new Account(BigDecimal.valueOf(1000.50), BigDecimal.valueOf(21.00), null);
         transferService.saveAccount(account);
 
     }
@@ -91,10 +91,8 @@ public class AatTransferServiceTest extends AbstractConfig {
      */
     @Test
     public void testTransferServiceUpdatingAccount() {
-        transferService.updateAccountBalance(220,
-                "6ebb8693-7179-4e04-80e1-89323971e98a");
-        final Account account = transferService
-                .getAccount("6ebb8693-7179-4e04-80e1-89323971e98a");
+        transferService.updateAccountBalance(220, FIRST_ACCOUNT);
+        final Account account = transferService.getAccount(FIRST_ACCOUNT);
         assertTrue(account.getBalance().doubleValue() == 220);
 
     }
@@ -105,10 +103,8 @@ public class AatTransferServiceTest extends AbstractConfig {
      */
     @Test
     public void testTransferServiceNotFoundAccount() {
-        final Account accountNull = transferService
-                .getAccount("6ebb8693-0000-0000-80e1-89323971e98a");
-        assertTrue("Account not available".equalsIgnoreCase(accountNull
-                .getName()));
+        final Account accountNull = transferService.getAccount(NEP_ACCOUNT);
+        assertTrue("Account not available".equalsIgnoreCase(accountNull.getName()));
     }
 
     /**
@@ -117,11 +113,20 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Test(expected = AnanieNotFoundException.class)
     public void testNotFoundAccountByTryingTransfer() {
 
-        final String accountSaskia = transferService.createAccount("0", "0",
-                "Saskia");
+        final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
-        transferService.doTransfer("6ebb8693-0000-0000-80e1-89323971e98a",
-                accountSaskia, 50);
+        transferService.doTransfer(NEP_ACCOUNT, accountSaskia, 50);
+    }
+
+    /**
+     * Test transfer service with incomplete information.
+     */
+    @Test(expected = ConstraintViolationException.class)
+    public void testTransferWithNoValidNumber() {
+
+        final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
+        transferService.doTransfer(FIRST_ACCOUNT, accountSaskia, -5.04);
+
     }
 
     /**
@@ -130,10 +135,8 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Test
     public void testTransferServiceFindAllAccounts() {
 
-        final List<Account> accountsRetrieved = transferService
-                .findAllAccounts();
-        assertTrue("Jasper"
-                .equalsIgnoreCase(accountsRetrieved.get(0).getName()));
+        final List<Account> accountsRetrieved = transferService.findAllAccounts();
+        assertTrue("Jasper".equalsIgnoreCase(accountsRetrieved.get(0).getName()));
         assertTrue(accountsRetrieved.size() == 2);
 
     }
@@ -145,12 +148,29 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Rollback(true)
     public void testTransferServiceTransfer() {
 
-        final String accountTheo = transferService.createAccount("200", "10",
-                "Theo");
-        final String accountSaskia = transferService.createAccount("0", "0",
-                "Saskia");
+        final String accountTheo = transferService.createAccount("200", "10", "Theo");
+        final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
         assertTrue(transferService.doTransfer(accountTheo, accountSaskia, 50) != 0);
+
+    }
+
+    /**
+     * Test transfer service with only strings returning a Transfer id.
+     */
+    @Test
+    public void testTransferServiceTransferWithStrings() {
+
+        final String accountTheo = transferService.createAccount("200", "10", "Theo");
+        final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
+
+        final Transfer transfer = new Transfer(accountTheo, accountSaskia, "30.50");
+
+        final Integer id = transferService.doTransfer(transfer);
+        assertTrue(id != 0);
+
+        final Account account = transferService.getAccount(accountSaskia);
+        assertTrue(account.getBalance().doubleValue() == 30.50);
 
     }
 
@@ -161,16 +181,11 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Rollback(true)
     public void testTransferServiceOverdraft() {
 
-        final String accountTheo = transferService.createAccount("200", "10",
-                "Theo");
-        final String accountSaskia = transferService.createAccount("0", "0",
-                "Saskia");
+        final String accountTheo = transferService.createAccount("200", "10", "Theo");
+        final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
-        final Integer transferTransactionId = transferService.doTransfer(
-                accountTheo, accountSaskia, 350);
-        assertEquals("INSUFFICIENT_FUNDS",
-                transferService.findTransferById(transferTransactionId)
-                        .getState());
+        final Integer transferTransactionId = transferService.doTransfer(accountTheo, accountSaskia, 350);
+        assertEquals("INSUFFICIENT_FUNDS", transferService.findTransferById(transferTransactionId).getState());
     }
 
     /**
@@ -180,11 +195,9 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Rollback(true)
     @Test
     public void testTransferServiceValidationReturningNull() {
-        final String accountTheo = transferService.createAccount("200", "10",
-                "Theo");
-        final Transaction transactionNull = transferService
-                .findTransactionByAccount(accountTheo);
-        assertTrue(transactionNull.getEntityId() == -1);
+        final String accountTheo = transferService.createAccount("200", "10", "Theo");
+        final List<Transaction> transactionNull = transferService.findTransactionByAccount(accountTheo);
+        assertTrue(transactionNull.get(0).getEntityId() == -1);
     }
 
     /**
@@ -208,10 +221,8 @@ public class AatTransferServiceTest extends AbstractConfig {
         final Transfer transfer = new Transfer();
         transfer.setTotaal(BigDecimal.valueOf(20.50));
 
-        transfer.setCredit(UUID
-                .fromString("6ebb8693-7179-4e04-80e1-89323971e98a"));
-        transfer.setDebet(UUID
-                .fromString("6ebb8693-7189-4e04-80e1-89323971e98a"));
+        transfer.setCredit(UUID.fromString(FIRST_ACCOUNT));
+        transfer.setDebet(UUID.fromString("6ebb8693-7189-4e04-80e1-89323971e98a"));
 
         assertTrue(transferService.saveTransfer(transfer) != 0);
     }
@@ -233,30 +244,23 @@ public class AatTransferServiceTest extends AbstractConfig {
     @Rollback(true)
     public void testTransferServiceTransferState() {
 
-        final String accountTheo = transferService.createAccount("200", "10",
-                "Theo");
-        final String accountSaskia = transferService.createAccount("0", "0",
-                "Saskia");
+        final String accountTheo = transferService.createAccount("200", "10", "Theo");
+        final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
         final Transfer transfer = new Transfer();
         transfer.setTotaal(BigDecimal.valueOf(20.50));
         transfer.setCredit(UUID.fromString(accountTheo));
         transfer.setDebet(UUID.fromString(accountSaskia));
-
+        // transfer.setEntityId(CrunchifyRandomNumber.generateRandomNumber());
         final Integer transferSaveId = transferService.saveTransfer(transfer);
 
-        assertEquals("PENDING", transferService
-                .findTransferById(transferSaveId).getState());
+        assertEquals("PENDING", transferService.findTransferById(transferSaveId).getState());
 
-        final Integer transferTransactionId = transferService
-                .doTransfer(transfer);
+        final Integer transferTransactionId = transferService.doTransfer(transfer);
 
-        assertEquals("CONFIRMED",
-                transferService.findTransferById(transferTransactionId)
-                        .getState());
+        assertEquals("CONFIRMED", transferService.findTransferById(transferTransactionId).getState());
 
-        assertTrue(20.50 == transferService.findTransferById(
-                transferTransactionId).getTotaal());
+        assertTrue(20.50 == transferService.findTransferById(transferTransactionId).getTotaal());
 
     }
 
@@ -266,11 +270,9 @@ public class AatTransferServiceTest extends AbstractConfig {
      */
     @Test
     public void testTransferServiceFindAllTransactions() {
-        final List<Transaction> transactions = transferService
-                .findAllTransactions();
+        final List<Transaction> transactions = transferService.findAllTransactions();
 
-        assertTrue("6ebb8693-7179-4e04-80e1-89323971e98a"
-                .equalsIgnoreCase(transactions.get(0).getAccount().toString()));
+        assertTrue(FIRST_ACCOUNT.equalsIgnoreCase(transactions.get(0).getAccount().toString()));
         assertTrue(transactions.size() == 1);
 
     }
@@ -283,8 +285,7 @@ public class AatTransferServiceTest extends AbstractConfig {
 
         final Transaction trans = transferService.findTransaction(0);
 
-        assertTrue("6ebb8693-7179-4e04-80e1-89323971e98a"
-                .equalsIgnoreCase(trans.getAccount().toString()));
+        assertTrue(FIRST_ACCOUNT.equalsIgnoreCase(trans.getAccount().toString()));
         assertTrue(trans.getTransfer().getTotaal() == 25.10);
 
     }

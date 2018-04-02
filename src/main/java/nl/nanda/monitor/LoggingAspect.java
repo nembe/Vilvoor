@@ -84,8 +84,7 @@ public class LoggingAspect {
      * @param joinPoint
      */
     @Before("doTransfer() && args(from,to,amount)")
-    public void implLogging(final JoinPoint joinPoint, final String from,
-            final String to, final double amount) {
+    public void implLogging(final JoinPoint joinPoint, final String from, final String to, final double amount) {
         final StringBuilder sb = new StringBuilder();
         sb.append("'Before' advice implementation - ");
         sb.append(joinPoint.getTarget().getClass());
@@ -107,11 +106,9 @@ public class LoggingAspect {
      * @param joinPoint
      */
     @AfterThrowing(value = "all()", throwing = "e")
-    public void reportConstraintViolationException(final JoinPoint joinPoint,
-            final ConstraintViolationException e) {
+    public void reportConstraintViolationException(final JoinPoint joinPoint, final ConstraintViolationException e) {
 
-        logger.info("'Report' Constraint Violation - "
-                + joinPoint.getTarget().getClass() + "; Executing error "
+        logger.info("'Report' Constraint Violation - " + joinPoint.getTarget().getClass() + "; Executing error "
                 + joinPoint.getSignature().getName() + "() method", e);
     }
 
@@ -121,11 +118,9 @@ public class LoggingAspect {
      * @param joinPoint
      */
     @AfterThrowing(value = "all()", throwing = "e")
-    public void reportAnanieException(final JoinPoint joinPoint,
-            final AnanieException e) {
+    public void reportAnanieException(final JoinPoint joinPoint, final AnanieException e) {
 
-        logger.info("'Report' Ananie Exception - "
-                + joinPoint.getTarget().getClass() + "; Executing error "
+        logger.info("'Report' Ananie Exception - " + joinPoint.getTarget().getClass() + "; Executing error "
                 + joinPoint.getSignature().getName() + "() method", e);
     }
 
@@ -135,11 +130,9 @@ public class LoggingAspect {
      * @param joinPoint
      */
     @AfterThrowing(pointcut = "all()", throwing = "e")
-    public void reportAnanieNotFoundException(final JoinPoint joinPoint,
-            final AnanieNotFoundException e) {
+    public void reportAnanieNotFoundException(final JoinPoint joinPoint, final AnanieNotFoundException e) {
 
-        logger.info("'Report' Ananie Not Found Exception - "
-                + joinPoint.getTarget().getClass() + "; Executing error "
+        logger.info("'Report' Ananie Not Found Exception - " + joinPoint.getTarget().getClass() + "; Executing error "
                 + joinPoint.getSignature().getName() + "() method", e);
     }
 
@@ -151,8 +144,7 @@ public class LoggingAspect {
      * @throws Throwable
      */
     @Around("doTransfer()")
-    public Object monitor(final ProceedingJoinPoint repositoryMethod)
-            throws Throwable {
+    public Object monitor(final ProceedingJoinPoint repositoryMethod) throws Throwable {
         final String name = createJoinPointTraceName(repositoryMethod);
         final Monitor monitor = monitorFactory.start(name);
         try {

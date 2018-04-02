@@ -57,6 +57,21 @@ public class AatAccountRepoTest extends AbstractConfig {
     }
 
     /**
+     * Testing Account UUID.
+     */
+    @Test
+    public void testAccountUUID() {
+
+        final Account account = AccountFactory.createAccounts(1000.50, 20.0,
+                "Coemba");
+        final Account accountSave = accountRepo.save(account);
+
+        assertTrue(accountSave.getAccountUUID()
+                .equals(account.getAccountUUID()));
+
+    }
+
+    /**
      * Finding accounts by there Primary Keys.
      */
     @Test

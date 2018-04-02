@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 
 import nl.nanda.exception.AnanieException;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.ColumnDefault;
 
 /**
  * An account for a member of the reward network. An account has one or more
@@ -43,8 +43,6 @@ public class Account implements Serializable {
 
     /** The account uuid. */
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "ACCOUNT_UUID")
     private UUID account_uuid;
 
@@ -64,6 +62,8 @@ public class Account implements Serializable {
     private String name;
 
     @Version
+    @ColumnDefault("0")
+    @Column(name = "VERSION")
     private Integer version;
 
     /**
@@ -83,8 +83,7 @@ public class Account implements Serializable {
      * @param name
      *            the name
      */
-    public Account(final BigDecimal balance, final BigDecimal overdraft,
-            final String name) {
+    public Account(final BigDecimal balance, final BigDecimal overdraft, final String name) {
         this.balance = balance;
         this.overdraft = overdraft;
         this.name = name;

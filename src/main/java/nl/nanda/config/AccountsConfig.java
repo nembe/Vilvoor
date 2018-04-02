@@ -15,7 +15,7 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("nl.nanda.service")
+@ComponentScan({ "nl.nanda.service", "nl.nanda.domain" })
 @Import({ SystemConfig.class, AspectsConfig.class })
 public class AccountsConfig {
 

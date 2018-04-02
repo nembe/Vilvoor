@@ -10,8 +10,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -20,7 +18,10 @@ import javax.validation.constraints.NotNull;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.Amount;
+import nl.nanda.domain.CrunchifyRandomNumber;
 import nl.nanda.status.Status;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * An Transfer for are to a account of the Ananie Bank. For updating the Account
@@ -37,7 +38,6 @@ public class Transfer {
 
     /** The entity id. */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     private Integer entityId;
 
@@ -69,11 +69,9 @@ public class Transfer {
     private Amount totaal;
 
     @Transient
-    @Valid
     private Account zender;
 
     @Transient
-    @Valid
     private Account ontvanger;
 
     /**
@@ -88,7 +86,7 @@ public class Transfer {
      * 
      */
     public Transfer() {
-        createTransfer();
+        createTransfer("0");
     }
 
     /**
@@ -101,7 +99,7 @@ public class Transfer {
      *            = the ontvanger account entity object (receiving money).
      */
     public Transfer(@Valid final Account zender, @Valid final Account ontvanger) {
-        createTransfer();
+        createTransfer("0");
         this.debet = ontvanger.getAccountUUID();
         this.credit = zender.getAccountUUID();
         this.zender = zender;
@@ -109,12 +107,28 @@ public class Transfer {
     }
 
     /**
+     * Instantiates a new transfer. Before starting the transfer we need the
+     * unique UUID's of the accounts and the amount to transfer.
+     * 
+     * @param from
+     *            = the sender uuid (sending money).
+     * @param to
+     *            = the receiver uuid (receiving money).
+     */
+    public Transfer(@NotEmpty final String from, @NotEmpty final String to, @NotEmpty final String amount) {
+        createTransfer(amount);
+        this.debet = UUID.fromString(to);
+        this.credit = UUID.fromString(from);
+    }
+
+    /**
      * Helper method DRY.
      */
-    private void createTransfer() {
-        this.totaal = new Amount(BigDecimal.valueOf(0));
+    private void createTransfer(final String amount) {
+        this.totaal = new Amount(BigDecimal.valueOf(Double.valueOf(amount)));
         this.state = Status.PENDING;
         this.day = Date.valueOf(LocalDate.now());
+        this.entityId = CrunchifyRandomNumber.generateRandomNumber();
     }
 
     /**
@@ -259,6 +273,16 @@ public class Transfer {
     public void setOntvanger(final Account ontvanger) {
         this.ontvanger = ontvanger;
         this.debet = ontvanger.getAccountUUID();
+    }
+
+    /**
+     * The client is setting the Id to be able to retrieve this record in the
+     * higher levels.
+     * 
+     * @param entityId
+     */
+    public void setEntityId(final Integer entityId) {
+        this.entityId = entityId;
     }
 
 }

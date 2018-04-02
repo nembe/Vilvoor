@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
  * is responsible for delegating requests to the Repositories. We try to
  * encapsulate DataTypes and back-end operations for the UI layered. These 3
  * Entity Objects Account, Transfer and Transaction are the only one that can be
- * used in the UI layer. It is not possible to use the Status, Amount, and the
+ * used in the UI layer. It is not possible to us the Status, Amount, and the
  * Repositories outside the Service Layer. The only two exceptions that the
  * client can handle from these operations are ConstraintViolationException,
  * AnanieException(parse error) and AnanieNotFoundException We don't return a
@@ -43,9 +43,7 @@ public interface TransferService {
      * @return the UUID string (unique) to be able to find the account.
      */
     @NotNull
-    String createAccount(@NotEmpty final String balance,
-            @NotEmpty final String roodToegestaan,
-            @NotEmpty final String accountUser);
+    String createAccount(@NotEmpty final String balance, @NotEmpty final String roodToegestaan, @NotEmpty final String accountUser);
 
     /**
      * Save account that is new or modified.
@@ -64,8 +62,7 @@ public interface TransferService {
      * @param saldo
      * @param uuid
      */
-    void updateAccountBalance(@Min(value = 0) double saldo,
-            @NotEmpty String uuid);
+    void updateAccountBalance(@Min(value = 0) double saldo, @NotEmpty String uuid);
 
     /**
      * Retrieve the account.
@@ -117,8 +114,7 @@ public interface TransferService {
      * @return the integer (primary key of the transfer).
      */
     @NotNull
-    Integer doTransfer(@NotEmpty final String from, @NotEmpty final String to,
-            @Min(value = 0) final double amount);
+    Integer doTransfer(@NotEmpty final String from, @NotEmpty final String to, @Min(value = 0) final double amount);
 
     /**
      * Try to use the overloaded method with String parameters in the UI layer.
@@ -160,7 +156,7 @@ public interface TransferService {
     List<Transfer> findAllTransfers();
 
     /**
-     * Find transaction.
+     * Find transaction by Database ID.
      *
      * @param id
      *            the id
@@ -170,14 +166,14 @@ public interface TransferService {
     Transaction findTransaction(@NotNull final Integer id);
 
     /**
-     * Find transaction by account.
+     * Find transaction by account uuid.
      *
      * @param id
      *            the id
      * @return the transaction
      */
     @NotNull
-    Transaction findTransactionByAccount(@NotEmpty final String id);
+    List<Transaction> findTransactionByAccount(@NotEmpty final String id);
 
     /**
      * Find transaction by transfer.

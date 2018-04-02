@@ -32,10 +32,9 @@ public class AatTransactionRepoTest extends AbstractConfig {
     @Test
     public void testFindTransactionByAccount() {
 
-        final Transaction txn = transactionRepo.findByAccount(UUID
-                .fromString("6ebb8693-7179-4e04-80e1-89323971e98a"));
+        final List<Transaction> txn = transactionRepo.findByAccount(UUID.fromString("6ebb8693-7179-4e04-80e1-89323971e98a"));
 
-        assertEquals(Integer.valueOf(0), txn.getTransfer().getEntityId());
+        assertEquals(Integer.valueOf(0), txn.get(0).getTransfer().getEntityId());
     }
 
     /**
@@ -46,8 +45,7 @@ public class AatTransactionRepoTest extends AbstractConfig {
 
         final Transfer trans = new Transfer();
 
-        final Transaction transaction = new Transaction(
-                UUID.fromString("6ebb8693-7179-4e04-80e1-89323971e98a"), trans);
+        final Transaction transaction = new Transaction(UUID.fromString("6ebb8693-7179-4e04-80e1-89323971e98a"), trans);
         transactionRepo.save(transaction);
     }
 
@@ -58,10 +56,8 @@ public class AatTransactionRepoTest extends AbstractConfig {
     public void testFindAllTransactionsByAccount() {
 
         // Creating the accounts
-        final Account accountDoubleSender = AccountFactory.createAccounts(
-                1000.50, 20.0, "accountDoubleSender");
-        final Account accountDoubleReciever = AccountFactory.createAccounts(
-                0.50, 0.0, "accountDoubleReciever");
+        final Account accountDoubleSender = AccountFactory.createAccounts(1000.50, 20.0, "accountDoubleSender");
+        final Account accountDoubleReciever = AccountFactory.createAccounts(0.50, 0.0, "accountDoubleReciever");
 
         // Saving the accounts (save entity in persistence context generation
         // id's )
@@ -69,32 +65,27 @@ public class AatTransactionRepoTest extends AbstractConfig {
         accountRepo.save(accountDoubleReciever);
 
         // Creating the transfers
-        final Transfer transOne = new Transfer(accountDoubleSender,
-                accountDoubleReciever);
-        final Transfer transTwo = new Transfer(accountDoubleSender,
-                accountDoubleReciever);
+        final Transfer transOne = new Transfer(accountDoubleSender, accountDoubleReciever);
+        final Transfer transTwo = new Transfer(accountDoubleSender, accountDoubleReciever);
 
         // Staring the Transfers
         transOne.startTransfer(BigDecimal.valueOf(10.50));
 
         // Create Transaction with given Transfer
-        final Transaction txnOne = new Transaction(
-                accountDoubleSender.getAccountUUID(), transOne);
+        final Transaction txnOne = new Transaction(accountDoubleSender.getAccountUUID(), transOne);
 
         // Save the Transactions and Transfer
         transferRepo.save(transOne);
         transactionRepo.save(txnOne);
 
         transTwo.startTransfer(BigDecimal.valueOf(20.50));
-        final Transaction txnTwo = new Transaction(
-                accountDoubleSender.getAccountUUID(), transTwo);
+        final Transaction txnTwo = new Transaction(accountDoubleSender.getAccountUUID(), transTwo);
 
         transferRepo.save(transTwo);
         transactionRepo.save(txnTwo);
 
         // Try to find the two transactions on this account
-        final List<Transaction> transactions = transactionRepo
-                .findAllByAccount(accountDoubleSender.getAccountUUID());
+        final List<Transaction> transactions = transactionRepo.findByAccount(accountDoubleSender.getAccountUUID());
 
         assertTrue(10.50 == transactions.get(0).getTransfer().getTotaal());
         assertEquals(2, transactions.size());
