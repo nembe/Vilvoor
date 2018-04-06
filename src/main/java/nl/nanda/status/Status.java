@@ -8,8 +8,7 @@ import nl.nanda.exception.AnanieException;
 
 public enum Status {
 
-    ACCOUNT_NOT_FOUND(0), CONFIRMED(1), INSUFFICIENT_FUNDS(2), PENDING(3), NOT_AVAILABLE(
-            4);
+    ACCOUNT_NOT_FOUND(1), CONFIRMED(2), INSUFFICIENT_FUNDS(3), PENDING(4), NOT_AVAILABLE(5);
     /** The state. */
     private Integer state;
 
@@ -35,19 +34,19 @@ public enum Status {
 
         String status;
         switch (state) {
-        case 0:
+        case 1:
             status = "ACCOUNT_NOT_FOUND";
             break;
-        case 1:
+        case 2:
             status = "CONFIRMED";
             break;
-        case 2:
+        case 3:
             status = "INSUFFICIENT_FUNDS";
             break;
-        case 3:
+        case 4:
             status = "PENDING";
             break;
-        case 4:
+        case 5:
             status = "NOT_AVAILABLE";
             break;
 

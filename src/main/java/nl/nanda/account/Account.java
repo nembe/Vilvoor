@@ -44,6 +44,7 @@ public class Account implements Serializable {
     /** The account uuid. */
     @Id
     @Column(name = "ACCOUNT_UUID")
+    @NotNull
     private UUID account_uuid;
 
     /** The overdraft. */

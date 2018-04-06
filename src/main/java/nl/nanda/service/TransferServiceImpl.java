@@ -8,6 +8,7 @@ import java.util.UUID;
 import nl.nanda.account.Account;
 import nl.nanda.account.dao.AccountRepository;
 import nl.nanda.domain.AccountFacilitator;
+import nl.nanda.domain.CrunchifyRandomNumber;
 import nl.nanda.domain.TransferFacilitator;
 import nl.nanda.service.empty.AccountNull;
 import nl.nanda.service.empty.TransactionNull;
@@ -153,8 +154,9 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Integer doTransfer(final String from, final String to, final double amount) {
 
-        final Integer returnedTransferId = transferFacilitator.returnTransfer(from, to, amount);
-        return returnedTransferId;
+        final Transfer transfer = new Transfer(UUID.fromString(from), UUID.fromString(to), amount);
+        transfer.setEntityId(CrunchifyRandomNumber.generateRandomNumber());
+        return doTransfer(transfer);
     }
 
     /*
@@ -166,7 +168,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Integer doTransfer(final Transfer transfer) {
 
-        return doTransfer(transfer.getCredit().toString(), transfer.getDebet().toString(), transfer.getTotaal());
+        return transferFacilitator.beginTransfer(transfer);
     }
 
     /*

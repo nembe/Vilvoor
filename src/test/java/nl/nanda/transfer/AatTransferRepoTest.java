@@ -73,7 +73,7 @@ public class AatTransferRepoTest extends AbstractConfig {
         accountRepo.save(creditAccount);
         accountRepo.save(debetAccount);
 
-        final Transfer trans = new Transfer(creditAccount.getAccountUUID().toString(), debetAccount.getAccountUUID().toString(), "20.50");
+        final Transfer trans = new Transfer(creditAccount.getAccountUUID(), debetAccount.getAccountUUID(), 20.50);
         // trans.setEntityId(CrunchifyRandomNumber.generateRandomNumber());
 
         assertNotNull(trans.getCredit());

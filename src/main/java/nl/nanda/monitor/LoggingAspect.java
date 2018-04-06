@@ -3,7 +3,6 @@ package nl.nanda.monitor;
 import javax.validation.ConstraintViolationException;
 
 import nl.nanda.exception.AnanieException;
-import nl.nanda.exception.AnanieNotFoundException;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -121,18 +120,6 @@ public class LoggingAspect {
     public void reportAnanieException(final JoinPoint joinPoint, final AnanieException e) {
 
         logger.info("'Report' Ananie Exception - " + joinPoint.getTarget().getClass() + "; Executing error "
-                + joinPoint.getSignature().getName() + "() method", e);
-    }
-
-    /**
-     * Report the error AnanieNotFoundException.
-     * 
-     * @param joinPoint
-     */
-    @AfterThrowing(pointcut = "all()", throwing = "e")
-    public void reportAnanieNotFoundException(final JoinPoint joinPoint, final AnanieNotFoundException e) {
-
-        logger.info("'Report' Ananie Not Found Exception - " + joinPoint.getTarget().getClass() + "; Executing error "
                 + joinPoint.getSignature().getName() + "() method", e);
     }
 

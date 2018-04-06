@@ -14,7 +14,6 @@ import nl.nanda.account.Account;
 import nl.nanda.account.AccountFactory;
 import nl.nanda.config.AbstractConfig;
 import nl.nanda.exception.AnanieException;
-import nl.nanda.exception.AnanieNotFoundException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transfer.Transfer;
 
@@ -110,12 +109,14 @@ public class AatTransferServiceTest extends AbstractConfig {
     /**
      * Test transfer service cannot complete because the account doesn't exist.
      */
-    @Test(expected = AnanieNotFoundException.class)
+    @Test
     public void testNotFoundAccountByTryingTransfer() {
 
         final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
-        transferService.doTransfer(NEP_ACCOUNT, accountSaskia, 50);
+        final Integer id = transferService.doTransfer(NEP_ACCOUNT, accountSaskia, 50);
+        final Transfer transfer = transferService.findTransferById(id);
+        assertTrue(transfer.getState().equalsIgnoreCase("ACCOUNT_NOT_FOUND"));
     }
 
     /**
@@ -164,14 +165,13 @@ public class AatTransferServiceTest extends AbstractConfig {
         final String accountTheo = transferService.createAccount("200", "10", "Theo");
         final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
-        final Transfer transfer = new Transfer(accountTheo, accountSaskia, "30.50");
+        final Transfer transfer = new Transfer(UUID.fromString(accountTheo), UUID.fromString(accountSaskia), 30.50);
 
         final Integer id = transferService.doTransfer(transfer);
         assertTrue(id != 0);
 
         final Account account = transferService.getAccount(accountSaskia);
         assertTrue(account.getBalance().doubleValue() == 30.50);
-
     }
 
     /**

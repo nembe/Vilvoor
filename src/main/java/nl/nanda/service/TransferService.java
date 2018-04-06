@@ -19,12 +19,11 @@ import org.springframework.validation.annotation.Validated;
  * is responsible for delegating requests to the Repositories. We try to
  * encapsulate DataTypes and back-end operations for the UI layered. These 3
  * Entity Objects Account, Transfer and Transaction are the only one that can be
- * used in the UI layer. It is not possible to us the Status, Amount, and the
+ * used in the UI layer. It is not possible to use the Status, Amount, and the
  * Repositories outside the Service Layer. The only two exceptions that the
  * client can handle from these operations are ConstraintViolationException,
- * AnanieException(parse error) and AnanieNotFoundException We don't return a
- * empty "NULL" instead we throw a exception, the client don't have to check for
- * NULL.
+ * AnanieException(parse error) We don't return a empty "NULL", the client don't
+ * have to check for NULL.
  *
  */
 @Validated

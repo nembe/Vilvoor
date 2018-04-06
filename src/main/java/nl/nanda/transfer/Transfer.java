@@ -24,10 +24,12 @@ import nl.nanda.status.Status;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * An Transfer for are to a account of the Ananie Bank. For updating the Account
- * entity we delegate that to the Amount class. The Status of the Transfer is
- * updated accordingly if a exception occur, we deal with that in the service
- * layer.
+ * An Transfer that we can start from a account to an account of the Ananie
+ * Bank. For updating the Account entity we delegate that to the Amount class.
+ * The Status of the Transfer is updated accordingly if a exception occur, we
+ * deal with that in the service layer. The Transfer ID is set by the client
+ * when starting the Transfer because the client don't have to wait after the
+ * Transfer was save.
  * 
  * 
  *
@@ -39,6 +41,7 @@ public class Transfer {
     /** The entity id. */
     @Id
     @Column(name = "ID")
+    @NotNull
     private Integer entityId;
 
     /** The credit. */
@@ -81,12 +84,9 @@ public class Transfer {
      * We need to put the accounts objects Before transferring money not needed
      * for only saving in DB.
      * 
-     * This can be done from the Service layer especially when transferring is
-     * required. Use the other constructor if needed to transfer money.
-     * 
      */
     public Transfer() {
-        createTransfer("0");
+        createTransfer(0.0);
     }
 
     /**
@@ -96,10 +96,10 @@ public class Transfer {
      * @param zender
      *            = the sender account entity object (sending money).
      * @param ontvanger
-     *            = the ontvanger account entity object (receiving money).
+     *            = the receiver account entity object (receiving money).
      */
     public Transfer(@Valid final Account zender, @Valid final Account ontvanger) {
-        createTransfer("0");
+        createTransfer(0.0);
         this.debet = ontvanger.getAccountUUID();
         this.credit = zender.getAccountUUID();
         this.zender = zender;
@@ -115,17 +115,17 @@ public class Transfer {
      * @param to
      *            = the receiver uuid (receiving money).
      */
-    public Transfer(@NotEmpty final String from, @NotEmpty final String to, @NotEmpty final String amount) {
+    public Transfer(@NotEmpty final UUID from, @NotEmpty final UUID to, @NotEmpty final double amount) {
         createTransfer(amount);
-        this.debet = UUID.fromString(to);
-        this.credit = UUID.fromString(from);
+        this.debet = to;
+        this.credit = from;
     }
 
     /**
      * Helper method DRY.
      */
-    private void createTransfer(final String amount) {
-        this.totaal = new Amount(BigDecimal.valueOf(Double.valueOf(amount)));
+    private void createTransfer(final double amount) {
+        this.totaal = new Amount(BigDecimal.valueOf(amount));
         this.state = Status.PENDING;
         this.day = Date.valueOf(LocalDate.now());
         this.entityId = CrunchifyRandomNumber.generateRandomNumber();
@@ -255,7 +255,6 @@ public class Transfer {
      */
     public void setZender(final Account zender) {
         this.zender = zender;
-        this.credit = zender.getAccountUUID();
     }
 
     /**
@@ -272,7 +271,6 @@ public class Transfer {
      */
     public void setOntvanger(final Account ontvanger) {
         this.ontvanger = ontvanger;
-        this.debet = ontvanger.getAccountUUID();
     }
 
     /**

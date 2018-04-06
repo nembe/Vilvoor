@@ -1,11 +1,9 @@
 package nl.nanda.domain;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.dao.AccountRepository;
-import nl.nanda.exception.AnanieNotFoundException;
 import nl.nanda.status.Status;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transaction.dao.TransactionRepository;
@@ -48,17 +46,19 @@ public class TransferFacilitator {
      * @param amount
      * @return the transfer primary key.
      */
-    public Integer returnTransfer(final String from, final String to, final double amount) {
+    public Integer beginTransfer(final Transfer transfer) {
+        final Transfer returnedTransfer = checkAccountAndReturnTransfer(transfer);
+        if (returnedTransfer.getOntvanger() != null || returnedTransfer.getZender() != null) {
 
-        final Transfer transfer = checkAccountAndReturnTransfer(from, to);
-        transfer.startTransfer(BigDecimal.valueOf(amount));
-        final Integer returnedTransferId = transferRepo.save(transfer).getEntityId();
+            returnedTransfer.startTransfer(BigDecimal.valueOf(transfer.getTotaal()));
+            transferRepo.save(returnedTransfer).getEntityId();
 
-        if ("CONFIRMED".equals(transfer.getState())) {
-            saveAccontsToCommitTransfer(transfer);
-            createTheTransaction(transfer);
+            if ("CONFIRMED".equals(returnedTransfer.getState())) {
+                saveAccontsToCommitTransfer(returnedTransfer);
+                createTheTransaction(returnedTransfer);
+            }
         }
-        return returnedTransferId;
+        return transfer.getEntityId();
     }
 
     /**
@@ -96,21 +96,20 @@ public class TransferFacilitator {
      * @param amount
      * @return
      */
-    private Transfer checkAccountAndReturnTransfer(final String from, final String to) {
+    private Transfer checkAccountAndReturnTransfer(final Transfer transfer) {
 
-        final Account accountFrom = accountFacilitator.findAccount(from);
-        final Account accountTo = accountFacilitator.findAccount(to);
+        final Account accountFrom = accountFacilitator.findAccount(transfer.getCredit().toString());
+        final Account accountTo = accountFacilitator.findAccount(transfer.getDebet().toString());
 
-        final Transfer transfer = new Transfer();
         if (accountFrom == null || accountTo == null) {
-            transfer.setCredit(UUID.fromString(from));
-            transfer.setDebet(UUID.fromString(to));
+            transfer.setCredit(transfer.getCredit());
+            transfer.setDebet(transfer.getDebet());
             transfer.setState(Status.ACCOUNT_NOT_FOUND);
             transferRepo.save(transfer);
-            throw new AnanieNotFoundException("Account Not found ");
+        } else {
+            transfer.setZender(accountFrom);
+            transfer.setOntvanger(accountTo);
         }
-        transfer.setZender(accountFrom);
-        transfer.setOntvanger(accountTo);
         return transfer;
     }
 }
