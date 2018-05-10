@@ -21,6 +21,7 @@ import nl.nanda.transfer.dao.TransferRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -60,7 +61,7 @@ public class TransferServiceImpl implements TransferService {
      * @see nl.nanda.service.TransferService#createAccount(java.lang.String,
      * java.lang.String, java.lang.String)
      */
-    @Override
+    @Override    
     public String createAccount(final String balance, final String roodToegestaan, final String accountUser) {
 
         final Account savedAccount = accountFacilitator.savingAccount(balance, roodToegestaan, accountUser);

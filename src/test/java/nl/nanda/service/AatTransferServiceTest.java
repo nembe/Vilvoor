@@ -1,6 +1,7 @@
 package nl.nanda.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import nl.nanda.exception.AnanieException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transfer.Transfer;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;
@@ -160,6 +162,7 @@ public class AatTransferServiceTest extends AbstractConfig {
      * Test transfer service with only strings returning a Transfer id.
      */
     @Test
+//    @Ignore
     public void testTransferServiceTransferWithStrings() {
 
         final String accountTheo = transferService.createAccount("200", "10", "Theo");
@@ -252,15 +255,14 @@ public class AatTransferServiceTest extends AbstractConfig {
         transfer.setCredit(UUID.fromString(accountTheo));
         transfer.setDebet(UUID.fromString(accountSaskia));
         // transfer.setEntityId(CrunchifyRandomNumber.generateRandomNumber());
-        final Integer transferSaveId = transferService.saveTransfer(transfer);
+//        final Integer transferSaveId = transferService.saveTransfer(transfer);
 
-        assertEquals("PENDING", transferService.findTransferById(transferSaveId).getState());
+//        assertEquals("PENDING", transferService.findTransferById(transferSaveId).getState());
 
         final Integer transferTransactionId = transferService.doTransfer(transfer);
 
-        assertEquals("CONFIRMED", transferService.findTransferById(transferTransactionId).getState());
-
-        assertTrue(20.50 == transferService.findTransferById(transferTransactionId).getTotaal());
+        assertNotNull(transferService.findTransaction(transferTransactionId));
+        assertTrue(accountTheo.equalsIgnoreCase(transferService.findTransaction(transferTransactionId).getAccount().toString()));
 
     }
 

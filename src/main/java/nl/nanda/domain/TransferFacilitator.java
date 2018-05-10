@@ -46,19 +46,20 @@ public class TransferFacilitator {
      * @param amount
      * @return the transfer primary key.
      */
-    public Integer beginTransfer(final Transfer transfer) {
+    public Integer beginTransfer(final Transfer transfer) {    	
         final Transfer returnedTransfer = checkAccountAndReturnTransfer(transfer);
         if (returnedTransfer.getOntvanger() != null || returnedTransfer.getZender() != null) {
 
             returnedTransfer.startTransfer(BigDecimal.valueOf(transfer.getTotaal()));
-            transferRepo.save(returnedTransfer).getEntityId();
+          //Uit gezet vanwege TransientPropertyValueException CascadeAll was de oplossing
+//            transferRepo.save(returnedTransfer).getEntityId();
 
             if ("CONFIRMED".equals(returnedTransfer.getState())) {
                 saveAccontsToCommitTransfer(returnedTransfer);
-                createTheTransaction(returnedTransfer);
-            }
+                return  createTheTransaction(returnedTransfer);
+            } 
         }
-        return transfer.getEntityId();
+        return transferRepo.save(returnedTransfer).getEntityId();
     }
 
     /**
@@ -69,10 +70,10 @@ public class TransferFacilitator {
      * @param transfer
      * @return
      */
-    private void createTheTransaction(final Transfer transfer) {
+    private Integer createTheTransaction(final Transfer transfer) {
 
         final Transaction transaction = new Transaction(transfer.getZender().getAccountUUID(), transfer);
-        transactionRepo.save(transaction);
+        return transactionRepo.save(transaction).getEntityId();
 
     }
 

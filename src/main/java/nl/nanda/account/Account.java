@@ -14,9 +14,11 @@ import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import nl.nanda.exception.AnanieException;
 
-import org.hibernate.annotations.ColumnDefault;
+
 
 /**
  * An account for a member of the reward network. An account has one or more
