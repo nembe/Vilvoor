@@ -5,24 +5,21 @@ import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nl.nanda.account.Account;
-import nl.nanda.account.dao.AccountRepository;
-import nl.nanda.domain.AccountFacilitator;
 import nl.nanda.domain.CrunchifyRandomNumber;
-import nl.nanda.domain.TransferFacilitator;
+import nl.nanda.service.adapters.AccountAdapter;
+import nl.nanda.service.adapters.TransactionAdapter;
+import nl.nanda.service.adapters.TransferAdapter;
 import nl.nanda.service.empty.AccountNull;
 import nl.nanda.service.empty.TransactionNull;
 import nl.nanda.service.empty.TransferNull;
 import nl.nanda.status.Status;
 import nl.nanda.transaction.Transaction;
-import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
-import nl.nanda.transfer.dao.TransferRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class TransferServiceImpl (Gateway) exposing Crud methods and do some
@@ -32,24 +29,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TransferServiceImpl implements TransferService {
 
-    private final String uuidNullString = "00000000-0000-0000-0000-89323971e98a";
-    /** The account repo. */
+    private final static String UUIDNULLSTRING = "00000000-0000-0000-0000-89323971e98a";
+        
     @Autowired
-    private AccountRepository accountRepo;
-
-    /** The transfer repo. */
+    private TransactionAdapter transactionAdapter;  
+   
     @Autowired
-    private TransferRepository transferRepo;
-
-    /** The transaction repo. */
-    @Autowired
-    private TransactionRepository transactionRepo;
+    private TransferAdapter transferAdapter;
 
     @Autowired
-    private TransferFacilitator transferFacilitator;
-
-    @Autowired
-    private AccountFacilitator accountFacilitator;
+    private AccountAdapter accountAdapter;
 
     /*
      * (non-Javadoc)
@@ -64,7 +53,7 @@ public class TransferServiceImpl implements TransferService {
     @Override    
     public String createAccount(final String balance, final String roodToegestaan, final String accountUser) {
 
-        final Account savedAccount = accountFacilitator.savingAccount(balance, roodToegestaan, accountUser);
+        final Account savedAccount = accountAdapter.savingAccount(balance, roodToegestaan, accountUser);
         return savedAccount.getAccountUUID().toString();
     }
 
@@ -80,7 +69,7 @@ public class TransferServiceImpl implements TransferService {
      */
     @Override
     public Account saveAccount(final Account account) {
-        return accountRepo.save(account);
+        return accountAdapter.save(account);
     }
 
     /*
@@ -93,7 +82,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void updateAccountBalance(final double saldo, final String uuid) {
 
-        accountRepo.updateAccountBalance(BigDecimal.valueOf(saldo), UUID.fromString(uuid));
+    	accountAdapter.updateAccountBalance(saldo, uuid);
     }
 
     /*
@@ -107,7 +96,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Account findAccountByName(final String name) {
-        return accountRepo.findAccountByName(name);
+        return accountAdapter.findAccountByName(name);
     }
 
     /*
@@ -121,7 +110,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Account getAccount(final String id) {
-        Account account = accountFacilitator.findAccount(id);
+        Account account = accountAdapter.findAccount(id);
         if (account == null) {
             account = new AccountNull(BigDecimal.valueOf(0), "Account not available");
         }
@@ -139,7 +128,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public List<Account> findAllAccounts() {
-        return accountRepo.findAll();
+        return accountAdapter.findAll();
     }
 
     /*
@@ -169,7 +158,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public Integer doTransfer(final Transfer transfer) {
 
-        return transferFacilitator.beginTransfer(transfer);
+        return transferAdapter.beginTransfer(transfer);
     }
 
     /*
@@ -184,7 +173,7 @@ public class TransferServiceImpl implements TransferService {
      */
     @Override
     public Integer saveTransfer(final Transfer transfer) {
-        return transferRepo.save(transfer).getEntityId();
+        return transferAdapter.saveTransfer(transfer);
     }
 
     /*
@@ -198,11 +187,11 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Transfer findTransferById(final Integer id) {
-        Transfer transfer = transferRepo.findByEntityId(id);
+        Transfer transfer = transferAdapter.findByEntityId(id);
         if (transfer == null) {
             transfer = new TransferNull();
-            transfer.setCredit(UUID.fromString(uuidNullString));
-            transfer.setDebet(UUID.fromString(uuidNullString));
+            transfer.setCredit(UUID.fromString(UUIDNULLSTRING));
+            transfer.setDebet(UUID.fromString(UUIDNULLSTRING));
             transfer.setState(Status.NOT_AVAILABLE);
         }
         return transfer;
@@ -220,11 +209,11 @@ public class TransferServiceImpl implements TransferService {
     @Transactional(readOnly = true)
     public Transfer findTransferByDate(final Date day) {
 
-        Transfer transfer = transferRepo.findByDay(day);
+        Transfer transfer = transferAdapter.findByDay(day);
         if (transfer == null) {
             transfer = new TransferNull();
-            transfer.setCredit(UUID.fromString(uuidNullString));
-            transfer.setDebet(UUID.fromString(uuidNullString));
+            transfer.setCredit(UUID.fromString(UUIDNULLSTRING));
+            transfer.setDebet(UUID.fromString(UUIDNULLSTRING));
             transfer.setState(Status.NOT_AVAILABLE);
         }
         return transfer;
@@ -241,7 +230,7 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public List<Transfer> findAllTransfers() {
-        return transferRepo.findAll();
+        return transferAdapter.findAllTransfers();
     }
 
     /*
@@ -256,11 +245,11 @@ public class TransferServiceImpl implements TransferService {
     @Transactional(readOnly = true)
     public Transaction findTransaction(final Integer id) {
 
-        Transaction transaction = transactionRepo.findByEntityId(id);
+        Transaction transaction = transactionAdapter.findByEntityId(id);
         if (transaction == null) {
             transaction = new TransactionNull();
             transaction.setEntityId(-1);
-            transaction.setAccount(UUID.fromString(uuidNullString));
+            transaction.setAccount(UUID.fromString(UUIDNULLSTRING));
         }
         return transaction;
     }
@@ -280,11 +269,11 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public List<Transaction> findTransactionByAccount(final String id) {
-        final List<Transaction> transactionList = transactionRepo.findByAccount(UUID.fromString(id));
+        final List<Transaction> transactionList = transactionAdapter.findByAccount(UUID.fromString(id));
         if (transactionList == null || transactionList.isEmpty()) {
             final Transaction transact = new TransactionNull();
             transact.setEntityId(-1);
-            transact.setAccount(UUID.fromString(uuidNullString));
+            transact.setAccount(UUID.fromString(UUIDNULLSTRING));
             transactionList.add(transact);
         }
         return transactionList;
@@ -305,11 +294,11 @@ public class TransferServiceImpl implements TransferService {
     @Override
     @Transactional(readOnly = true)
     public Transaction findTransactionByTransfer(final Transfer transfer) {
-        Transaction transaction = transactionRepo.findByTransfer(transfer);
+        Transaction transaction = transactionAdapter.findByTransfer(transfer);
         if (transaction == null) {
             transaction = new TransactionNull();
             transaction.setEntityId(-1);
-            transaction.setAccount(UUID.fromString(uuidNullString));
+            transaction.setAccount(UUID.fromString(UUIDNULLSTRING));
         }
 
         return transaction;
@@ -327,7 +316,7 @@ public class TransferServiceImpl implements TransferService {
     @Transactional(readOnly = true)
     public List<Transaction> findAllTransactions() {
 
-        return transactionRepo.findAll();
+        return transactionAdapter.findAll();
     }
 
 }

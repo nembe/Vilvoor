@@ -10,12 +10,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
+import com.google.common.eventbus.EventBus;
+
 /**
  * The Class AccountsConfig configure the service layer beans.
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({ "nl.nanda.service", "nl.nanda.domain" })
+@ComponentScan({ "nl.nanda.service","nl.nanda.service.adapters", "nl.nanda.domain" })
 @Import({ SystemConfig.class, AspectsConfig.class })
 public class AccountsConfig {
 
@@ -30,6 +32,11 @@ public class AccountsConfig {
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
+    }
+    
+    @Bean
+    public EventBus eventBus() {
+        return new EventBus();
     }
 
 }

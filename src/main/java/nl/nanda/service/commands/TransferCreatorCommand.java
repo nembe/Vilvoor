@@ -1,42 +1,33 @@
-package nl.nanda.domain;
+package nl.nanda.service.commands;
 
 import java.math.BigDecimal;
 
 import nl.nanda.account.Account;
 import nl.nanda.account.dao.AccountRepository;
+import nl.nanda.domain.TransferCommand;
 import nl.nanda.status.Status;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
 import nl.nanda.transfer.dao.TransferRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-//TODO: Make Junit Test for this component.
-/**
- * Searching for the participating accounts and start the Transfer.
- *
- */
-@Component
-public class TransferFacilitator {
-
-    /** The account repo. */
-    @Autowired
+public class TransferCreatorCommand extends TransferCommand {
+	
+	/** The transfer repo. */   
+    private TransferRepository transferRepo;
+    
+    /** The account repo. */   
     private AccountRepository accountRepo;
 
-    /** The transfer repo. */
-    @Autowired
-    private TransferRepository transferRepo;
-
-    /** The transaction repo. */
-    @Autowired
     private TransactionRepository transactionRepo;
-
-    @Autowired
-    private AccountFacilitator accountFacilitator;
-
-    /**
+	
+    public TransferCreatorCommand(TransferRepository transferRepo, AccountRepository accountRepo, TransactionRepository transactionRepo) {
+	  this.transferRepo = transferRepo;
+	  this.accountRepo = accountRepo;
+	  this.transactionRepo = transactionRepo;
+    }
+	
+	 /**
      * Returning the Transfer ID so that We can trace the transfer state. If the
      * transfer is successful the state of the transfer will be "CONFIRMED".
      * With the Transfer ID we can find the "confirmed" Transaction.
@@ -47,19 +38,16 @@ public class TransferFacilitator {
      * @return the transfer primary key.
      */
     public Integer beginTransfer(final Transfer transfer) {    	
-        final Transfer returnedTransfer = checkAccountAndReturnTransfer(transfer);
-        if (returnedTransfer.getOntvanger() != null || returnedTransfer.getZender() != null) {
+        setTransfer(checkAccountAndReturnTransfer(transfer));
+        if (getTransfer().getOntvanger() != null || getTransfer().getZender() != null) {
 
-            returnedTransfer.startTransfer(BigDecimal.valueOf(transfer.getTotaal()));
-          //Uit gezet vanwege TransientPropertyValueException CascadeAll was de oplossing
-//            transferRepo.save(returnedTransfer).getEntityId();
-
-            if ("CONFIRMED".equals(returnedTransfer.getState())) {
-                saveAccontsToCommitTransfer(returnedTransfer);
-                return  createTheTransaction(returnedTransfer);
+        	getTransfer().startTransfer(BigDecimal.valueOf(transfer.getTotaal()));
+   
+            if ("CONFIRMED".equals(getTransfer().getState())) {
+                return  createTheTransaction(getTransfer());
             } 
         }
-        return transferRepo.save(returnedTransfer).getEntityId();
+        return getTransfer().getEntityId();
     }
 
     /**
@@ -72,21 +60,11 @@ public class TransferFacilitator {
      */
     private Integer createTheTransaction(final Transfer transfer) {
 
-        final Transaction transaction = new Transaction(transfer.getZender().getAccountUUID(), transfer);
-        return transactionRepo.save(transaction).getEntityId();
-
+        setTransaction(new Transaction(transfer.getZender().getAccountUUID(), transfer));
+        return getTransaction().getEntityId();
     }
 
-    /**
-     * We update the account table with the new balance of the accounts.
-     * 
-     * @param transfer
-     */
-    private void saveAccontsToCommitTransfer(final Transfer transfer) {
-        accountRepo.save(transfer.getZender());
-        accountRepo.save(transfer.getOntvanger());
-    }
-
+   
     /**
      * Creating a Transfer with state "Pending". If one of the accounts is not
      * found we throw a exception (AnanieNotFoundException). Because the
@@ -99,8 +77,8 @@ public class TransferFacilitator {
      */
     private Transfer checkAccountAndReturnTransfer(final Transfer transfer) {
 
-        final Account accountFrom = accountFacilitator.findAccount(transfer.getCredit().toString());
-        final Account accountTo = accountFacilitator.findAccount(transfer.getDebet().toString());
+        final Account accountFrom = accountRepo.findAccountByUuid(transfer.getCredit());
+        final Account accountTo = accountRepo.findAccountByUuid(transfer.getDebet());
 
         if (accountFrom == null || accountTo == null) {
             transfer.setCredit(transfer.getCredit());
@@ -113,4 +91,17 @@ public class TransferFacilitator {
         }
         return transfer;
     }
+
+	@Override
+	public void create() {
+		accountRepo.save(getTransfer().getZender());
+        accountRepo.save(getTransfer().getOntvanger());        
+        if (getTransaction() != null) {
+			transactionRepo.save(getTransaction());
+		}
+		transferRepo.save(getTransfer());		
+	}
+    
+    
+
 }

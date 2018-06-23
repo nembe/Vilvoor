@@ -162,8 +162,8 @@ public class AatTransferServiceTest extends AbstractConfig {
      * Test transfer service with only strings returning a Transfer id.
      */
     @Test
-//    @Ignore
     public void testTransferServiceTransferWithStrings() {
+    	    
 
         final String accountTheo = transferService.createAccount("200", "10", "Theo");
         final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
@@ -188,6 +188,7 @@ public class AatTransferServiceTest extends AbstractConfig {
         final String accountSaskia = transferService.createAccount("0", "0", "Saskia");
 
         final Integer transferTransactionId = transferService.doTransfer(accountTheo, accountSaskia, 350);
+        System.out.println("testTransferServiceOverdraft "+transferTransactionId);
         assertEquals("INSUFFICIENT_FUNDS", transferService.findTransferById(transferTransactionId).getState());
     }
 
@@ -253,17 +254,11 @@ public class AatTransferServiceTest extends AbstractConfig {
         final Transfer transfer = new Transfer();
         transfer.setTotaal(BigDecimal.valueOf(20.50));
         transfer.setCredit(UUID.fromString(accountTheo));
-        transfer.setDebet(UUID.fromString(accountSaskia));
-        // transfer.setEntityId(CrunchifyRandomNumber.generateRandomNumber());
-//        final Integer transferSaveId = transferService.saveTransfer(transfer);
-
-//        assertEquals("PENDING", transferService.findTransferById(transferSaveId).getState());
-
+        transfer.setDebet(UUID.fromString(accountSaskia)); 
+    
         final Integer transferTransactionId = transferService.doTransfer(transfer);
-
-        assertNotNull(transferService.findTransaction(transferTransactionId));
+        assertNotNull(transferService.findTransaction(transferTransactionId)); 
         assertTrue(accountTheo.equalsIgnoreCase(transferService.findTransaction(transferTransactionId).getAccount().toString()));
-
     }
 
     /**
