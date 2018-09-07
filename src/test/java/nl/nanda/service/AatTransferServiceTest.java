@@ -18,7 +18,6 @@ import nl.nanda.exception.AnanieException;
 import nl.nanda.transaction.Transaction;
 import nl.nanda.transfer.Transfer;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.annotation.Rollback;

@@ -6,12 +6,14 @@ import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.dao.TransferRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
  * The Class AbstractConfig.
  */
 @ContextConfiguration(classes = { AccountsConfig.class })
+@ActiveProfiles("start")
 public class AbstractConfig {
 
     // /** The manager. */

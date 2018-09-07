@@ -18,6 +18,8 @@ import nl.nanda.transfer.dao.TransferRepository;
 //TODO: Make Junit Test for this component.
 /**
  * Searching for the participating accounts and start the Transfer.
+ * We create the needed Commands to do the actual work with the repos we provide, True an Invoker.
+ * The Commands and the Repos can chance, without client modification.
  *
  */
 @Component

@@ -11,6 +11,10 @@ import nl.nanda.domain.AccountCommand;
 import nl.nanda.exception.AnanieException;
 
 /**
+ * The client creates this type of Command.
+ * This Command needs three Repos to finish the Job.
+ * And Implements the Interface what the Client don't know.
+ * These class is not a singleton (Spring Bean) can be clean up by GC. 
  * @author Wroko
  *
  */

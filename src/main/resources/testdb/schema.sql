@@ -1,3 +1,4 @@
+CREATE SCHEMA ACCOUNTS AUTHORIZATION DBA;
 drop table T_ACCOUNT if exists;
 drop table T_TRANSACTION if exists;
 drop table T_TRANSFER if exists;
@@ -11,6 +12,7 @@ create table T_TRANSACTION (ID integer identity primary key, ACCOUNT_ID UUID not
 create table T_TRANSFER (ID integer identity primary key, FROM_ACCOUNT UUID not null, TO_ACCOUNT UUID not null, STATUS_ID smallint not null, TRANSFER_DATE date not null, AMOUNT decimal(9,2) not null);
 create table T_STATUS (ID smallint identity primary key, TRANSFER_STATUS varchar(20) not null);
 CREATE INDEX myIndex on T_ACCOUNT (ACCOUNT_UUID);
+CREATE INDEX myIndexNAME on T_ACCOUNT (NAME);
 CREATE INDEX myIndexTransfer on T_TRANSFER (FROM_ACCOUNT);
 
 alter table T_TRANSFER add constraint FK_STATUS foreign key (STATUS_ID) references T_STATUS(ID) on delete cascade;

@@ -11,6 +11,15 @@ import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
 import nl.nanda.transfer.dao.TransferRepository;
 
+/**
+ * The client creates this type of Command.
+ * This Command needs three Repos to finish the Job.
+ * And Implements the Interface what the Client don't know.
+ * These class is not a singleton (Spring Bean) can be clean up by GC. 
+ * 
+ * @author Wroko
+ *
+ */
 public class TransferCreatorCommand extends TransferCommand {
 	
 	/** The transfer repo. */   

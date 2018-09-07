@@ -11,6 +11,13 @@ import nl.nanda.transaction.dao.TransactionRepository;
 import nl.nanda.transfer.Transfer;
 
 
+/**
+ * This Adapter isn't decoupled.
+ * No coupling (Command) between Adapter and Repos (no MiTM) to do the Job.
+ * 
+ * @author Wroko
+ *
+ */
 @Component
 public class TransactionAdapterImpl implements TransactionAdapter {
 	

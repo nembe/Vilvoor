@@ -36,6 +36,13 @@
 		<AsyncLogger name="nl.nanda" level="debug">
 		</AsyncLogger>
 		
+		
+		<AsyncLogger name="org.hibernate.SQL" level="debug">
+        </AsyncLogger>
+        
+        <AsyncLogger name="com.zaxxer.hikari" level="debug">
+        </AsyncLogger>
+		
 		<!-- 3rdparty Loggers  level="debug" additivity="true" -->
 		<AsyncLogger name="org.springframework" level="debug">
         </AsyncLogger>
