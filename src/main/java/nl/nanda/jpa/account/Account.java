@@ -1,4 +1,4 @@
-package nl.nanda.account;
+package nl.nanda.jpa.account;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

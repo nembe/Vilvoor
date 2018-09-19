@@ -8,9 +8,10 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import nl.nanda.account.Account;
 import nl.nanda.account.AccountFactory;
 import nl.nanda.config.AbstractConfig;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.transfer.Transfer;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

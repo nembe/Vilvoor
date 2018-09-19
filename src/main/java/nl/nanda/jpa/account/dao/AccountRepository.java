@@ -1,15 +1,15 @@
-package nl.nanda.account.dao;
+package nl.nanda.jpa.account.dao;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-
-import nl.nanda.account.Account;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import nl.nanda.jpa.account.Account;
 
 /**
  * 

@@ -3,7 +3,7 @@ package nl.nanda.service.adapters;
 import java.sql.Date;
 import java.util.List;
 
-import nl.nanda.transfer.Transfer;
+import nl.nanda.jpa.transfer.Transfer;
 
 /**
  * Creates and store the Transfer.

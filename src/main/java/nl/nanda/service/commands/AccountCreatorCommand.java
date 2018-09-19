@@ -5,10 +5,10 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import nl.nanda.account.Account;
-import nl.nanda.account.dao.AccountRepository;
 import nl.nanda.domain.AccountCommand;
 import nl.nanda.exception.AnanieException;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.account.dao.AccountRepository;
 
 /**
  * The client creates this type of Command.

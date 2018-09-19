@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
 
-import nl.nanda.account.Account;
-import nl.nanda.account.dao.AccountRepository;
 import nl.nanda.domain.AccountCommand;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.account.dao.AccountRepository;
 import nl.nanda.service.commands.AccountCreatorCommand;
 
 

@@ -1,7 +1,7 @@
 package nl.nanda.domain;
 
-import nl.nanda.transaction.Transaction;
-import nl.nanda.transaction.dao.TransactionRepository;
+import nl.nanda.jpa.transaction.Transaction;
+import nl.nanda.jpa.transaction.dao.TransactionRepository;
 
 public class TransactionCommand implements Command {
 	

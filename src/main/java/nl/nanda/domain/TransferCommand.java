@@ -1,8 +1,8 @@
 package nl.nanda.domain;
 
-import nl.nanda.account.Account;
-import nl.nanda.transaction.Transaction;
-import nl.nanda.transfer.Transfer;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.transaction.Transaction;
+import nl.nanda.jpa.transfer.Transfer;
 
 /**
  * This command is responsible for communicating with the backend DB and Validation.

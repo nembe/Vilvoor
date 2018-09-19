@@ -2,7 +2,7 @@ package nl.nanda.service.adapters;
 
 import java.util.List;
 
-import nl.nanda.account.Account;
+import nl.nanda.jpa.account.Account;
 
 /**
  * Creates and store the Account.

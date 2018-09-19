@@ -3,6 +3,8 @@ package nl.nanda.account;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import nl.nanda.jpa.account.Account;
+
 /**
  * Creates accounts Objects for testing.
  *

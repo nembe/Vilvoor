@@ -7,7 +7,7 @@
 	            %d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
 	        </Property>
 	         <Property name="HOME">
-	           C:/Users/Wroko/Home-logging
+	           /home/java/Logs
 	        </Property>
 	    </Properties>
 	    
@@ -20,7 +20,7 @@
      <!--    <File name="File" fileName="ananielogfile.log">
 		</File> -->
 	
-	    <RollingFile name="FileAppender" fileName="${HOME}\ananielogfile.log"  filePattern="ananielogfile-%d{yyyy-MM-dd}-%i.log">
+	    <RollingFile name="FileAppender" fileName="${HOME}/ananielogfile.log"  filePattern="ananielogfile-%d{yyyy-MM-dd}-%i.log">
 	       <PatternLayout>
 	               <Pattern>${LOG_PATTERN}</Pattern>
 	       </PatternLayout>
@@ -59,7 +59,7 @@
 		<AsyncLogger name="org.springframework.web">
         </AsyncLogger>
 		
-		<Root level="error">
+		<Root level="debug">
 			<AppenderRef ref="Console" /> 
 			<AppenderRef ref="FileAppender" />  
 		</Root>

@@ -6,9 +6,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import nl.nanda.transaction.Transaction;
-import nl.nanda.transaction.dao.TransactionRepository;
-import nl.nanda.transfer.Transfer;
+import nl.nanda.jpa.transaction.Transaction;
+import nl.nanda.jpa.transaction.dao.TransactionRepository;
+import nl.nanda.jpa.transfer.Transfer;
 
 
 /**

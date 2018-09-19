@@ -2,7 +2,7 @@ package nl.nanda.domain;
 
 import java.util.UUID;
 
-import nl.nanda.account.Account;
+import nl.nanda.jpa.account.Account;
 
 /**
  * This command is responsible for communicating with the backend DB and Validation.

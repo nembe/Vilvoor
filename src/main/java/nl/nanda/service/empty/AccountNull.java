@@ -2,7 +2,7 @@ package nl.nanda.service.empty;
 
 import java.math.BigDecimal;
 
-import nl.nanda.account.Account;
+import nl.nanda.jpa.account.Account;
 
 /**
  * We promise the client to return a Account, so instead of returning nothing we

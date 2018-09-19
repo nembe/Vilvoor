@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.EventBus;
 
-import nl.nanda.account.dao.AccountRepository;
 import nl.nanda.domain.TransferCommand;
+import nl.nanda.jpa.account.dao.AccountRepository;
+import nl.nanda.jpa.transaction.dao.TransactionRepository;
+import nl.nanda.jpa.transfer.Transfer;
+import nl.nanda.jpa.transfer.dao.TransferRepository;
 import nl.nanda.service.commands.TransferCreatorCommand;
-import nl.nanda.transaction.dao.TransactionRepository;
-import nl.nanda.transfer.Transfer;
-import nl.nanda.transfer.dao.TransferRepository;
 
 //TODO: Make Junit Test for this component.
 /**

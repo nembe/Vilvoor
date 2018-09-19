@@ -1,11 +1,11 @@
-package nl.nanda.transfer.dao;
+package nl.nanda.jpa.transfer.dao;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
-import nl.nanda.account.Amount;
-import nl.nanda.transfer.Transfer;
+import nl.nanda.jpa.account.Amount;
+import nl.nanda.jpa.transfer.Transfer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

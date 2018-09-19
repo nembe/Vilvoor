@@ -7,9 +7,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import nl.nanda.account.Account;
-import nl.nanda.transaction.Transaction;
-import nl.nanda.transfer.Transfer;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.transaction.Transaction;
+import nl.nanda.jpa.transfer.Transfer;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;

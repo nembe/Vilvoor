@@ -1,10 +1,10 @@
-package nl.nanda.transaction.dao;
+package nl.nanda.jpa.transaction.dao;
 
 import java.util.List;
 import java.util.UUID;
 
-import nl.nanda.transaction.Transaction;
-import nl.nanda.transfer.Transfer;
+import nl.nanda.jpa.transaction.Transaction;
+import nl.nanda.jpa.transfer.Transfer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

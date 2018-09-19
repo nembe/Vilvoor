@@ -1,41 +1,37 @@
 package nl.nanda.config;
 
-import nl.nanda.account.dao.AccountRepository;
-import nl.nanda.service.TransferService;
-import nl.nanda.transaction.dao.TransactionRepository;
-import nl.nanda.transfer.dao.TransferRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+
+import nl.nanda.jpa.account.dao.AccountRepository;
+import nl.nanda.jpa.transaction.dao.TransactionRepository;
+import nl.nanda.jpa.transfer.dao.TransferRepository;
+import nl.nanda.service.TransferService;
 
 /**
  * The Class AbstractConfig.
  */
 @ContextConfiguration(classes = { AccountsConfig.class })
-@ActiveProfiles("start")
+// @ActiveProfiles("test")
 public class AbstractConfig {
 
-    // /** The manager. */
-    // @Autowired
-    // public EntityManager manager;
+	/**
+	 * The object being tested.
+	 */
+	@Autowired
+	public AccountRepository accountRepo;
 
-    /**
-     * The object being tested.
-     */
-    @Autowired
-    public AccountRepository accountRepo;
+	/** The transfer repo. */
+	@Autowired
+	public TransferRepository transferRepo;
 
-    /** The transfer repo. */
-    @Autowired
-    public TransferRepository transferRepo;
+	/** The transaction repo. */
+	@Autowired
+	public TransactionRepository transactionRepo;
 
-    /** The transaction repo. */
-    @Autowired
-    public TransactionRepository transactionRepo;
-
-    /** The transfer service. */
-    @Autowired
-    public TransferService transferService;
+	/** The transfer service. */
+	@Autowired
+	public TransferService transferService;
 
 }

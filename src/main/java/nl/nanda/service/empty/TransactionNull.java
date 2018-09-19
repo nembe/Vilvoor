@@ -1,6 +1,6 @@
 package nl.nanda.service.empty;
 
-import nl.nanda.transaction.Transaction;
+import nl.nanda.jpa.transaction.Transaction;
 
 /**
  * We promise the client to return a Transaction, so instead of returning

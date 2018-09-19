@@ -2,14 +2,14 @@ package nl.nanda.service.commands;
 
 import java.math.BigDecimal;
 
-import nl.nanda.account.Account;
-import nl.nanda.account.dao.AccountRepository;
 import nl.nanda.domain.TransferCommand;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.account.dao.AccountRepository;
+import nl.nanda.jpa.transaction.Transaction;
+import nl.nanda.jpa.transaction.dao.TransactionRepository;
+import nl.nanda.jpa.transfer.Transfer;
+import nl.nanda.jpa.transfer.dao.TransferRepository;
 import nl.nanda.status.Status;
-import nl.nanda.transaction.Transaction;
-import nl.nanda.transaction.dao.TransactionRepository;
-import nl.nanda.transfer.Transfer;
-import nl.nanda.transfer.dao.TransferRepository;
 
 /**
  * The client creates this type of Command.

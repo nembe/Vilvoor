@@ -1,4 +1,4 @@
-package nl.nanda.transfer;
+package nl.nanda.jpa.transfer;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -16,9 +16,9 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import nl.nanda.account.Account;
-import nl.nanda.account.Amount;
 import nl.nanda.domain.CrunchifyRandomNumber;
+import nl.nanda.jpa.account.Account;
+import nl.nanda.jpa.account.Amount;
 import nl.nanda.status.Status;
 
 import org.hibernate.validator.constraints.NotEmpty;
