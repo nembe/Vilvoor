@@ -1,6 +1,7 @@
 package nl.nanda.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -13,7 +14,8 @@ import nl.nanda.service.TransferService;
  * The Class AbstractConfig.
  */
 @ContextConfiguration(classes = { AccountsConfig.class })
-// @ActiveProfiles("test")
+// @DirtiesContext
+@ActiveProfiles("test")
 public class AbstractConfig {
 
 	/**

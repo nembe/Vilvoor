@@ -70,6 +70,8 @@ public class ConfigurationProperties {
 	private String use_query_cache;
 	@Value("${spring.hibernate.cache.use_minimal_puts}")
 	private String use_minimal_puts;
+	@Value("${spring.hibernate.cache.region.factory_class}")
+	private String ehcache;
 
 	public String getDialect() {
 		return dialect;
@@ -269,6 +271,14 @@ public class ConfigurationProperties {
 
 	public void setSchema(String schema) {
 		this.schema = schema;
+	}
+
+	public String getEhcache() {
+		return ehcache;
+	}
+
+	public void setEhcache(String ehcache) {
+		this.ehcache = ehcache;
 	}
 
 }

@@ -34,7 +34,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-public class ItTransferServiceTest extends AbstractConfig {
+public class TransferServiceIT extends AbstractConfig {
 
 	private final static String FIRST_ACCOUNT = "6ebb8693-7179-4e04-80e1-89323971e98a";
 	private final static String NEP_ACCOUNT = "6ebb8693-0000-0000-80e1-89323971e98a";

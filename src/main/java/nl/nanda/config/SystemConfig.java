@@ -5,7 +5,6 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -77,6 +76,7 @@ public class SystemConfig {
 		props.put("hibernate.format_sql", properties.getFormat());
 		props.put("javax.persistence.validation.mode", properties.getMode());
 		props.put("hibernate.cache.use_second_level_cache", properties.getSecond_level_cache());
+		props.put("hibernate.cache.region.factory_class", properties.getEhcache());
 		props.put("hibernate.cache.use_query_cache", properties.getUse_query_cache());
 		props.put("hibernate.cache.use_minimal_puts", properties.getUse_minimal_puts());
 		return props;
